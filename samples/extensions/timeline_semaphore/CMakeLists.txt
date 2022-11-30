@@ -1,38 +1,7 @@
-# Copyright (c) 2021, Arm Limited and Contributors
-#
-# SPDX-License-Identifier: Apache-2.0
-#
-# Licensed under the Apache License, Version 2.0 the "License";
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
+get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+set(PROJECT_NAME "My_${PROJECT_NAME}")
+file(GLOB SOURCE_FILES *.cpp)
+file(GLOB HEADER_FILES *.h)
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
 
-if (NOT WIN32)
-    # Not enabled on Windows at this time due to bugs.
-    # Out-of-order submission in presentation causes kernel level issues,
-    # and need to be figured out before this sample can be enabled on Windows.
-    get_filename_component(FOLDER_NAME ${CMAKE_CURRENT_LIST_DIR} NAME)
-    get_filename_component(PARENT_DIR ${CMAKE_CURRENT_LIST_DIR} PATH)
-    get_filename_component(CATEGORY_NAME ${PARENT_DIR} NAME)
-
-    add_sample_with_tags(
-            ID ${FOLDER_NAME}
-            CATEGORY ${CATEGORY_NAME}
-            AUTHOR "Hans-Kristian Arntzen"
-            NAME "Timeline semaphore"
-            DESCRIPTION "Demonstrates use of timeline semaphores to express complex queue dependency graphs"
-            SHADER_FILES_GLSL            
-                "timeline_semaphore/game_of_life_update.comp"
-                "timeline_semaphore/game_of_life_mutate.comp"
-                "timeline_semaphore/game_of_life_init.comp"
-                "timeline_semaphore/render.vert"
-                "timeline_semaphore/render.frag")
-endif()
+target_link_libraries(${PROJECT_NAME} PRIVATE framework)

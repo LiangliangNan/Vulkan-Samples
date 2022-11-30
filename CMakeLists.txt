@@ -19,8 +19,8 @@ cmake_minimum_required(VERSION 3.16)
 
 project(vulkan_samples)
 
-# create output folder
-file(MAKE_DIRECTORY output)
+# The include directory of the exported header files
+set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Add path for local cmake scripts
 list(APPEND CMAKE_MODULE_PATH

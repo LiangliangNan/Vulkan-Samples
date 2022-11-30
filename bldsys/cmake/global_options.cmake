@@ -36,7 +36,7 @@ if(APPLE)
     # prior to 1.3 Find_Vulkan should not return a Vulkan_FOUND variable, so should not set an extension that doesn't exist in legacy Vulkan.
     # Note that this is only required for moltenVK implementations.  NB: this does create a warning in CMake that the range isn't supported in FindVulkan.
     cmake_minimum_required(VERSION 3.19)
-    find_package(Vulkan 1.3...<2.0)
+    find_package(Vulkan REQUIRED)
     if(Vulkan_FOUND)
         set(VKB_ENABLE_PORTABILITY ON CACHE BOOL "Enable portability extension enumeration in the framework.  This is required to be set if running MoltenVK and Vulkan 1.3+" FORCE)
     else()
@@ -52,9 +52,10 @@ set(VKB_BUILD_SAMPLES ON CACHE BOOL "Enable generation and building of Vulkan be
 set(VKB_BUILD_TESTS OFF CACHE BOOL "Enable generation and building of Vulkan best practice tests.")
 set(VKB_WSI_SELECTION "XCB" CACHE STRING "Select WSI target (XCB, XLIB, WAYLAND, D2D)")
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "bin/${CMAKE_BUILD_TYPE}/${TARGET_ARCH}")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "lib/${CMAKE_BUILD_TYPE}/${TARGET_ARCH}")
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "lib/${CMAKE_BUILD_TYPE}/${TARGET_ARCH}")
+### Where to put the libraries
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_DISABLE_SOURCE_CHANGES ON)

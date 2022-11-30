@@ -485,7 +485,13 @@ if(${VKB_WARNINGS_AS_ERRORS})
     endif()
 endif()
 
-target_include_directories(${PROJECT_NAME} PUBLIC $<TARGET_PROPERTY:plugins,INCLUDE_DIRECTORIES> ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+target_compile_definitions(${PROJECT_NAME} PUBLIC
+        "SHADERS_DIR=\"${ROOT_DIR}/shaders\""
+        "ASSETS_DIR=\"${ROOT_DIR}/assets\""
+        "OUTPUT_DIR=\"${ROOT_DIR}/output\""
+        )
 
 # Link third party libraries
 target_link_libraries(${PROJECT_NAME} PUBLIC

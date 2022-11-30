@@ -32,12 +32,12 @@ namespace fs
 {
 namespace path
 {
-const std::unordered_map<Type, std::string> relative_paths = {{Type::Assets, "assets/"},
-                                                              {Type::Shaders, "shaders/"},
-                                                              {Type::Storage, "output/"},
-                                                              {Type::Screenshots, "output/images/"},
-                                                              {Type::Logs, "output/logs/"},
-                                                              {Type::Graphs, "output/graphs/"}};
+const std::unordered_map<Type, std::string> relative_paths = {{Type::Assets, std::string(ASSETS_DIR) + "/"},
+                                                              {Type::Shaders, std::string(SHADERS_DIR) + "/"},
+                                                              {Type::Storage, std::string(OUTPUT_DIR) + "/"},
+                                                              {Type::Screenshots, std::string(OUTPUT_DIR) + "/images/"},
+                                                              {Type::Logs, std::string(OUTPUT_DIR) + "/logs/"},
+                                                              {Type::Graphs, std::string(OUTPUT_DIR) + "/graphs/"}};
 
 const std::string get(const Type type, const std::string &file)
 {
