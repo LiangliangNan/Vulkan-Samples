@@ -17,7 +17,7 @@
 
 cmake_minimum_required(VERSION 3.16)
 
-project(vulkan_samples)
+project(Vulkan_OfficialSamples)
 
 # The include directory of the exported header files
 set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
