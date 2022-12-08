@@ -349,3 +349,20 @@ std::unique_ptr<vkb::VulkanSample> create_16bit_arithmetic()
 {
 	return std::make_unique<KHR16BitArithmeticSample>();
 }
+
+
+#include "common/logging.h"
+#include "platform/platform.h"
+#include "platform/unix/unix_platform.h"
+int main(int argc, char *argv[])
+{
+	vkb::UnixPlatform platform{vkb::UnixType::Mac, argc, argv};
+	auto code = platform.initialize({});
+	if (code == vkb::ExitCode::Success) {
+		apps::AppInfo info("My-app", create_16bit_arithmetic);
+		platform.request_application(&info);
+		code = platform.main_loop();
+	}
+	platform.terminate(code);
+	return EXIT_SUCCESS;
+}

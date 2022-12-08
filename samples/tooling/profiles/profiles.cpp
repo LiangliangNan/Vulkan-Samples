@@ -709,3 +709,19 @@ std::unique_ptr<vkb::Application> create_profiles()
 {
 	return std::make_unique<Profiles>();
 }
+
+
+#include "platform/unix/unix_platform.h"
+int main(int argc, char *argv[])
+{
+	vkb::UnixPlatform platform{vkb::UnixType::Mac, argc, argv};
+	auto code = platform.initialize({});
+	if (code == vkb::ExitCode::Success) {
+		apps::AppInfo info("My-app", create_profiles);
+		platform.request_application(&info);
+		code = platform.main_loop();
+	}
+
+	platform.terminate(code);
+	return EXIT_SUCCESS;
+}

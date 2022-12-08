@@ -38,14 +38,7 @@ set(FRAMEWORK_FILES
     api_vulkan_sample.h
     timer.h
     camera.h
-    hpp_api_vulkan_sample.h
-    hpp_fence_pool.h
-    hpp_glsl_compiler.h
-    hpp_gltf_loader.h
-    hpp_gui.h
-    hpp_resource_cache.h
-    hpp_vulkan_sample.h
-    # Source Files
+        # Source Files
     gui.cpp
     glsl_compiler.cpp
     spirv_reflection.cpp
@@ -63,8 +56,7 @@ set(FRAMEWORK_FILES
     api_vulkan_sample.cpp
     timer.cpp
     camera.cpp
-    hpp_api_vulkan_sample.cpp
-	hpp_vulkan_sample.cpp)
+        )
 
 set(COMMON_FILES
     # Header Files
@@ -78,11 +70,7 @@ set(COMMON_FILES
     common/utils.h
     common/strings.h
     common/tags.h
-    common/hpp_error.h
-    common/hpp_strings.h
-    common/hpp_utils.h
-    common/hpp_vk_common.h
-    # Source Files
+        # Source Files
     common/error.cpp
     common/vk_common.cpp
     common/utils.cpp
@@ -106,11 +94,7 @@ set(RENDERING_FILES
     rendering/render_pipeline.h
     rendering/render_target.h
     rendering/subpass.h
-    rendering/hpp_render_context.h
-    rendering/hpp_render_frame.h
-    rendering/hpp_render_pipeline.h
-    rendering/hpp_render_target.h
-    # Source files
+        # Source files
     rendering/pipeline_state.cpp
     rendering/postprocessing_pipeline.cpp
     rendering/postprocessing_pass.cpp
@@ -121,16 +105,14 @@ set(RENDERING_FILES
     rendering/render_pipeline.cpp
     rendering/render_target.cpp
     rendering/subpass.cpp
-    rendering/hpp_render_context.cpp
-    rendering/hpp_render_target.cpp)
+        )
 
 set(RENDERING_SUBPASSES_FILES
     # Header files
     rendering/subpasses/forward_subpass.h
     rendering/subpasses/lighting_subpass.h
     rendering/subpasses/geometry_subpass.h
-    rendering/subpasses/hpp_forward_subpass.h
-    # Source files
+        # Source files
     rendering/subpasses/forward_subpass.cpp
     rendering/subpasses/lighting_subpass.cpp
     rendering/subpasses/geometry_subpass.cpp)
@@ -165,9 +147,7 @@ set(SCENE_GRAPH_COMPONENT_FILES
     scene_graph/components/image/astc.h
     scene_graph/components/image/ktx.h
     scene_graph/components/image/stb.h
-    scene_graph/components/hpp_image.h
-    scene_graph/components/hpp_sub_mesh.h
-    # Source Files
+        # Source Files
     scene_graph/components/aabb.cpp
     scene_graph/components/camera.cpp
     scene_graph/components/perspective_camera.cpp
@@ -203,9 +183,8 @@ set(STATS_FILES
     stats/frame_time_stats_provider.h
     stats/hwcpipe_stats_provider.h
     stats/vulkan_stats_provider.h
-    stats/hpp_stats.h
 
-    # Source Files
+        # Source Files
     stats/stats.cpp
     stats/stats_provider.cpp
     stats/frame_time_stats_provider.cpp
@@ -240,19 +219,7 @@ set(CORE_FILES
     core/scratch_buffer.h
     core/acceleration_structure.h
     core/shader_binding_table.h
-    core/hpp_buffer.h
-    core/hpp_command_buffer.h
-    core/hpp_command_pool.h
-    core/hpp_debug.h
-    core/hpp_device.h
-    core/hpp_image.h
-    core/hpp_image_view.h
-    core/hpp_instance.h
-    core/hpp_physical_device.h
-    core/hpp_queue.h
-    core/hpp_swapchain.h
-    core/hpp_vulkan_resource.h
-    core/vulkan_resource.h
+        core/vulkan_resource.h
     # Source Files
     core/instance.cpp
     core/physical_device.cpp
@@ -282,15 +249,7 @@ set(CORE_FILES
     core/acceleration_structure.cpp
     core/shader_binding_table.cpp
     core/vulkan_resource.cpp
-    core/hpp_command_pool.cpp
-    core/hpp_device.cpp
-    core/hpp_image.cpp
-    core/hpp_instance.cpp
-    core/hpp_physical_device.cpp
-    core/hpp_queue.cpp
-    core/hpp_swapchain.cpp
-    core/hpp_vulkan_resource.cpp
-)
+        )
 
 set(PLATFORM_FILES
     # Header Files
@@ -304,11 +263,8 @@ set(PLATFORM_FILES
     platform/headless_window.h
     platform/plugins/plugin.h
     platform/plugins/plugin_base.h
-    platform/hpp_application.h
-    platform/hpp_platform.h
-    platform/hpp_window.h
 
-    # Source Files
+        # Source Files
     platform/headless_window.cpp
     platform/application.cpp
     platform/platform.cpp
