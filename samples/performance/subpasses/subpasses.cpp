@@ -104,7 +104,7 @@ void Subpasses::prepare_render_context()
 
 bool Subpasses::prepare()
 {
-	if (!VulkanSample::prepare(platform))
+	if (!VulkanSample::prepare())
 	{
 		return false;
 	}
@@ -440,18 +440,11 @@ void Subpasses::draw_renderpass(vkb::CommandBuffer &command_buffer, vkb::RenderT
 	}
 }
 
-std::unique_ptr<vkb::VulkanSample> create_subpasses()
-{
-	return std::make_unique<Subpasses>();
-}
 
-
-#include "platform/unix/unix_platform.h"
 int main(int argc, char *argv[])
 {
 	Subpasses app;
 	app.prepare();
-	app.finish();
-	return 0;
-	return EXIT_SUCCESS;
+	return app.run();
 }
+

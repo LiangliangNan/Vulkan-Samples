@@ -79,5 +79,3 @@ class RenderPassesSample : public vkb::VulkanSample
 
 	float frame_rate;
 };
-
-std::unique_ptr<vkb::VulkanSample> create_render_passes();

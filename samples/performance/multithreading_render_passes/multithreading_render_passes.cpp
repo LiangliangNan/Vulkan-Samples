@@ -41,7 +41,7 @@ MultithreadingRenderPasses::MultithreadingRenderPasses()
 
 bool MultithreadingRenderPasses::prepare()
 {
-	if (!VulkanSample::prepare(platform))
+	if (!VulkanSample::prepare())
 	{
 		return false;
 	}
@@ -533,7 +533,6 @@ int main(int argc, char *argv[])
 {
 	MultithreadingRenderPasses app;
 	app.prepare();
-	app.run();
-	app.finish();
-	return EXIT_SUCCESS;
+	return app.run();
 }
+

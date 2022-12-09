@@ -819,14 +819,8 @@ void MSAASample::draw_gui()
 
 int main(int argc, char *argv[])
 {
-//	Window::Properties properties{};
-//	properties.title = "My first vulkan application";
-//	properties.extent.width = 800;
-//	properties.extent.height = 600;
-//	properties.mode = Window::Mode::Default;
-//	properties.vsync = Window::Vsync::Default;
-
 	MSAASample app;
 	app.prepare();
 	return app.run();
 }
+

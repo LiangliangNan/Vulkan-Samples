@@ -177,5 +177,3 @@ class MultithreadingRenderPasses : public vkb::VulkanSample
 
 	void draw_main_pass(vkb::CommandBuffer &command_buffer);
 };
-
-std::unique_ptr<vkb::VulkanSample> create_multithreading_render_passes();

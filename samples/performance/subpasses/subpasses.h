@@ -136,5 +136,3 @@ class Subpasses : public vkb::VulkanSample
 	     /* options     = */ {"128-bit", "More"},
 	     /* value       = */ 0}};
 };
-
-std::unique_ptr<vkb::VulkanSample> create_subpasses();

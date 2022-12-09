@@ -78,6 +78,8 @@ namespace vkb {
 
         void set_name(const std::string &name);
 
+	    Window &get_window() const { return *window; }
+	    Platform &get_platform() const { return *platform; }
 		DebugInfo &get_debug_info() { return debug_info; }
 
     protected:
@@ -99,7 +101,5 @@ namespace vkb {
 	    std::unique_ptr<Window> window{nullptr};
 
 	    std::unique_ptr<Platform> platform{nullptr};
-
-	    Window &get_window() const { return *window; }
     };
 }        // namespace vkb

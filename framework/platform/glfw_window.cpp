@@ -19,40 +19,15 @@
 
 #include <unordered_map>
 
-//#include "common/error.h"
-
-//VKBP_DISABLE_WARNINGS()
 #define GLFW_INCLUDE_NONE
-
 #include <GLFW/glfw3.h>
-//#include <GLFW/glfw3native.h>
-//#include <spdlog/sinks/stdout_color_sinks.h>
-//#include <spdlog/spdlog.h>
-//VKBP_ENABLE_WARNINGS()
 
 #include "application.h"
 
+
 namespace vkb {
+
     namespace {
-        void error_callback(int error, const char *description) {
-            //LOGE("GLFW Error (code {}): {}", error, description);
-        }
-
-        void window_close_callback(GLFWwindow *window) {
-            glfwSetWindowShouldClose(window, GLFW_TRUE);
-        }
-
-        void window_size_callback(GLFWwindow *window, int width, int height) {
-            if (auto app = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window))) {
-                app->resize(width, height);
-            }
-        }
-
-        void window_focus_callback(GLFWwindow *window, int focused) {
-            if (auto app = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window))) {
-//		platform->set_focus(focused);
-            }
-        }
 
         inline KeyCode translate_key_code(int key) {
             static const std::unordered_map<int, KeyCode> key_lookup =
@@ -182,20 +157,10 @@ namespace vkb {
             return KeyAction::Unknown;
         }
 
-        void key_callback(GLFWwindow *window, int key, int /*scancode*/, int action, int /*mods*/) {
-            KeyCode key_code = translate_key_code(key);
-            KeyAction key_action = translate_key_action(action);
-
-            if (auto app = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window))) {
-//		app->input_event(KeyInputEvent{key_code, key_action});
-            }
-        }
-
         inline MouseButton translate_mouse_button(int button) {
             if (button < GLFW_MOUSE_BUTTON_6) {
                 return static_cast<MouseButton>(button);
             }
-
             return MouseButton::Unknown;
         }
 
@@ -208,32 +173,8 @@ namespace vkb {
 
             return MouseAction::Unknown;
         }
-
-        void cursor_position_callback(GLFWwindow *window, double xpos, double ypos) {
-            if (auto app = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window))) {
-//		platform->input_event(MouseButtonInputEvent{
-//		    MouseButton::Unknown,
-//		    MouseAction::Move,
-//		    static_cast<float>(xpos),
-//		    static_cast<float>(ypos)});
-            }
-        }
-
-        void mouse_button_callback(GLFWwindow *window, int button, int action, int /*mods*/) {
-            MouseAction mouse_action = translate_mouse_action(action);
-
-            if (auto app = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window))) {
-                double xpos, ypos;
-                glfwGetCursorPos(window, &xpos, &ypos);
-
-//		app->input_event(MouseButtonInputEvent{
-//		    translate_mouse_button(button),
-//		    mouse_action,
-//		    static_cast<float>(xpos),
-//		    static_cast<float>(ypos)});
-            }
-        }
     }        // namespace
+
 
     GlfwWindow::GlfwWindow(Application *app, const Window::Properties &properties) :
             Window(properties) {
@@ -245,7 +186,10 @@ namespace vkb {
             throw std::runtime_error("GLFW couldn't be initialized.");
         }
 
-        glfwSetErrorCallback(error_callback);
+        glfwSetErrorCallback([](int error, const char *description) {
+		    LOGE("GLFW Error (code {}): {}", error, description);
+	    });
+
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
         switch (properties.mode) {
@@ -286,14 +230,45 @@ namespace vkb {
 
         glfwSetWindowUserPointer(handle, app);
 
-        glfwSetWindowCloseCallback(handle, window_close_callback);
-        glfwSetWindowSizeCallback(handle, window_size_callback);
-        glfwSetWindowFocusCallback(handle, window_focus_callback);
-        glfwSetKeyCallback(handle, key_callback);
-        glfwSetCursorPosCallback(handle, cursor_position_callback);
-        glfwSetMouseButtonCallback(handle, mouse_button_callback);
+	    glfwSetWindowCloseCallback(handle, [](GLFWwindow *window) -> void {
+		    glfwSetWindowShouldClose(window, GLFW_TRUE);
+	    });
+	    glfwSetWindowSizeCallback(handle, [](GLFWwindow *window, int width, int height) {
+		    if (auto app = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window)))
+		    {
+			    app->resize(width, height);
+		    }
+	    });
+	    glfwSetKeyCallback(handle, [](GLFWwindow *window, int key, int /*scancode*/, int action, int /*mods*/) {
+		    if (auto app = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window)))
+		    {
+			    app->input_event(KeyInputEvent{translate_key_code(key), translate_key_action(action)});
+		    }
+	    });
+	    glfwSetCursorPosCallback(handle, [](GLFWwindow *window, double xpos, double ypos) {
+		    if (auto app = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window)))
+		    {
+			    app->input_event(MouseButtonInputEvent{
+			        MouseButton::Unknown,
+			        MouseAction::Move,
+			        static_cast<float>(xpos),
+			        static_cast<float>(ypos)});
+		    }
+	    });
+	    glfwSetMouseButtonCallback(handle, [](GLFWwindow *window, int button, int action, int /*mods*/) {
+		    if (auto app = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window)))
+		    {
+			    double xpos, ypos;
+			    glfwGetCursorPos(window, &xpos, &ypos);
+			    app->input_event(MouseButtonInputEvent{
+			        translate_mouse_button(button),
+			        translate_mouse_action(action),
+			        static_cast<float>(xpos),
+			        static_cast<float>(ypos)});
+		    }
+	    });
 
-        glfwSetInputMode(handle, GLFW_STICKY_KEYS, 1);
+	    glfwSetInputMode(handle, GLFW_STICKY_KEYS, 1);
         glfwSetInputMode(handle, GLFW_STICKY_MOUSE_BUTTONS, 1);
     }
 

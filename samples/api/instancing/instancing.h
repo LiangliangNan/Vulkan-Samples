@@ -103,10 +103,8 @@ class Instancing : public ApiVulkanSample
 	void         prepare_uniform_buffers();
 	void         update_uniform_buffer(float delta_time);
 	void         draw();
-	bool         bool prepare() override;
+	bool         prepare() override;
 	virtual void render(float delta_time) override;
 	virtual void on_update_ui_overlay(vkb::Drawer &drawer) override;
 	virtual bool resize(const uint32_t width, const uint32_t height) override;
 };
-
-std::unique_ptr<vkb::Application> create_instancing();

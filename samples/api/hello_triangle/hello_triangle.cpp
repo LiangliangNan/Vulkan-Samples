@@ -1081,7 +1081,7 @@ void HelloTriangle::teardown(Context &context)
 	vk_instance.reset();
 }
 
-HelloTriangle::HelloTriangle()
+HelloTriangle::HelloTriangle() : Application(0, nullptr)
 {
 }
 
@@ -1174,26 +1174,11 @@ bool HelloTriangle::resize(const uint32_t, const uint32_t)
 	return true;
 }
 
-std::unique_ptr<vkb::Application> create_hello_triangle()
-{
-	return std::make_unique<HelloTriangle>();
-}
 
-
-
-
-#include "platform/unix/unix_platform.h"
 int main(int argc, char *argv[])
 {
-	vkb::UnixPlatform platform{vkb::UnixType::Mac, argc, argv};
-	auto code = platform.initialize({});
-	if (code == vkb::ExitCode::Success) {
-		apps::AppInfo info("My-app", create_hello_triangle);
-		platform.request_application(&info);
-		code = platform.main_loop();
-	}
-
-	platform.terminate(code);
-	return EXIT_SUCCESS;
+	HelloTriangle app;
+	app.prepare();
+	return app.run();
 }
 
