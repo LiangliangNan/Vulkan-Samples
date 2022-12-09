@@ -21,7 +21,6 @@
 #include <spdlog/spdlog.h>
 
 #define LOGGER_FORMAT "[%^%l%$] %v"
-#define PROJECT_NAME "VulkanSamples"
 
 // Mainly for IDEs
 #ifndef ROOT_PATH_SIZE

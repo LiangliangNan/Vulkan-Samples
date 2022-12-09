@@ -102,7 +102,8 @@ namespace vkb
 class VulkanSample : public Application
 {
   public:
-	VulkanSample() = default;
+	VulkanSample(int argc = 0, char** argv = nullptr) :
+	    Application(argc, argv) {}
 
 	virtual ~VulkanSample();
 
@@ -110,18 +111,6 @@ class VulkanSample : public Application
 	 * @brief Additional sample initialization
 	 */
 	bool prepare() override;
-
-//	/**
-//	 * @brief Create the Vulkan device used by this sample
-//	 * @note Can be overridden to implement custom device creation
-//	 */
-//	virtual void create_device();
-//
-//	/**
-//	 * @brief Create the Vulkan instance used by this sample
-//	 * @note Can be overridden to implement custom instance creation
-//	 */
-//	virtual void create_instance();
 
 	/**
 	 * @brief Main loop sample events

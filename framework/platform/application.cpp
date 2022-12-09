@@ -15,79 +15,98 @@
  * limitations under the License.
  */
 
-#include "application.h"
-
 #include <iostream>
 
-//#include "common/logging.h"
-//#include "platform/platform.h"
+#include "application.h"
+#include "platform/platform.h"
 
+namespace vkb
+{
 
-namespace vkb {
-
-
-    Application::Application() :
-            name{"Sample Name"} {
-	    platform = std::make_unique<Platform>();
-	    window = platform->create_window(this);
-    }
-
-    bool Application::prepare() {
-        return true;
-    }
-
-    void Application::main_loop() {
-	    while (!window->should_close())
-	    {
-		    try
-		    {
-
-			    auto delta_time = static_cast<float>(timer.tick<Timer::Seconds>());
-
-			    if (window->is_visible() /* && window->is_focused()*/)
-			    {
-//				    on_update(delta_time);
-
-//				    if (fixed_simulation_fps)
-//				    {
-//					    delta_time = simulation_frame_time;
-//				    }
-
-				    update(delta_time);
-			    }
-
-			    window->process_events();
-		    }
-		    catch (std::exception &e)
-		    {
-			    LOGE("Error Message: {}", e.what());
-			    LOGE("Failed when running application {}", get_name());
-//			    on_app_error(active_app->get_name());
-		    }
-	    }
-    }
-
-    void Application::finish() {
-    }
-
-    bool Application::resize(const uint32_t /*width*/, const uint32_t /*height*/) {
-        return true;
-    }
-
-    void Application::input_event(const InputEvent &input_event) {
-    }
-
-    void Application::update(float delta_time) {
-        fps = 1.0f / delta_time;
-        frame_time = delta_time * 1000.0f;
-    }
-
-    const std::string &Application::get_name() const {
-        return name;
-    }
-
-    void Application::set_name(const std::string &name_) {
-        name = name_;
-    }
-
+Application::Application(int argc, char *argv[]) :
+    name{"Sample Name"}
+{
+	platform = std::make_unique<Platform>(argc, argv);
+	window   = platform->create_window(this);
 }
+
+bool Application::prepare()
+{
+	return true;
+}
+
+int Application::run()
+{
+	while (!window->should_close() && !platform->should_close())
+	{
+		try
+		{
+			auto delta_time = static_cast<float>(timer.tick<Timer::Seconds>());
+			if (window->is_visible() /* && window->is_focused()*/)
+			{
+				platform->update(delta_time);
+				update(delta_time);
+			}
+
+			window->process_events();
+		}
+		catch (std::exception &e)
+		{
+			LOGE("Error Message: {}", e.what());
+			LOGE("Failed when running application {}", get_name());
+			finish();
+			// on_app_error(active_app->get_name());
+			return EXIT_FAILURE;
+		}
+	}
+
+	finish();
+	return EXIT_SUCCESS;
+}
+
+void Application::finish()
+{
+	platform->finish();
+}
+
+bool Application::resize(const uint32_t /*width*/, const uint32_t /*height*/)
+{
+	return true;
+}
+
+void Application::input_event(const InputEvent &input_event)
+{
+	//	    if (process_input_events && active_app)
+	//	    {
+	//		    active_app->input_event(input_event);
+	//	    }
+	//
+	//	    if (input_event.get_source() == EventSource::Keyboard)
+	//	    {
+	//		    const auto &key_event = static_cast<const KeyInputEvent &>(input_event);
+	//
+	//		    if (key_event.get_code() == KeyCode::Back ||
+	//		        key_event.get_code() == KeyCode::Escape)
+	//		    {
+	//			    close();
+	//		    }
+	//	    }
+}
+
+void Application::update(float delta_time)
+{
+	fps        = 1.0f / delta_time;
+	frame_time = delta_time * 1000.0f;
+}
+
+const std::string &Application::get_name() const
+{
+	return name;
+}
+
+void Application::set_name(const std::string &name_)
+{
+	name = name_;
+}
+
+}        // namespace vkb

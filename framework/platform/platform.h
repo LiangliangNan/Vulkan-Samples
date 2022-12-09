@@ -17,21 +17,8 @@
 
 #pragma once
 
-#include <memory>
-#include <string>
-#include <vector>
-
-//#include "apps.h"
-#include "common/optional.h"
-#include "common/utils.h"
-#include "common/vk_common.h"
-#include "platform/filesystem.h"
-#include "platform/parser.h"
 #include "platform/plugins/plugin.h"
 #include "platform/window.h"
-#include "platform/input_events.h"
-#include "rendering/render_context.h"
-#include "timer.h"
 
 #if defined(VK_USE_PLATFORM_XLIB_KHR)
 #	undef Success
@@ -40,80 +27,39 @@
 namespace vkb
 {
 
-enum class ExitCode
-{
-	Success = 0, /* App executed as expected */
-	Help,        /* App should show help */
-	Close,       /* App has been requested to close at initialization */
-	FatalError   /* App encountered an unexpected error */
-};
-
 class Application;
 
 class Platform
 {
   public:
 	/**
-	 * @brief Initialize the platform
-	 * @param plugins plugins available to the platform
-	 * @return An exit code representing the outcome of initialization
+	 * @brief Constructor.
+	 * It initialize the platform and creates plugins available to the platform.
 	 */
-	explicit Platform(const std::vector<Plugin *> &plugins = {});
-
-	virtual ~Platform() = default;
+	explicit Platform(int argc, char *argv[]);
+	virtual ~Platform();
 
 	/**
-		 * @brief Handles the creation of the window
-		 *
-		 * @param properties Preferred window configuration
+	 * @brief Update the plugins.
 	 */
-	static std::unique_ptr<Window> create_window(Application* app, const Window::Properties &properties = Window::Properties());
+	virtual void update(float delta_time);
 
 	/**
-	 * @brief Handles the main loop of the platform
-	 * This should be overriden if a platform requires a specific main loop setup.
-	 * @return An exit code representing the outcome of the loop
+	 * Should the application be closed (a plugin can request a close of the application).
+	 * @return true if the application has been requested to close.
 	 */
-	ExitCode main_loop();
+	virtual bool should_close() const;
 
 	/**
-	 * @brief Runs the application for one frame
+	 * @brief Finishes the jobs of the plugins.
 	 */
-	void update();
+	virtual void finish();
 
 	/**
-	 * @brief Terminates the platform and the application
-	 * @param code Determines how the platform should exit
+	 * @brief Handles the creation of the window
+	 * @param properties Preferred window configuration
 	 */
-	virtual void terminate(ExitCode code);
-
-	/**
-	 * @brief Requests to close the platform at the next available point
-	 */
-	virtual void close();
-
-	/**
-	 * @brief Returns the working directory of the application set by the platform
-	 * @returns The path to the working directory
-	 */
-	static const std::string &get_external_storage_directory();
-	/**
-	 * @brief Returns the suitable directory for temporary files from the environment variables set in the system
-	 * @returns The path to the temp folder on the system
-	 */
-	static const std::string &get_temp_directory();
-
-
-	/**
-	 * @return The VkInstance extension name for the platform
-	 */
-//	virtual const char *get_surface_extension() = 0;
-
-	virtual std::unique_ptr<RenderContext> create_render_context(Device &device, VkSurfaceKHR surface, const std::vector<VkSurfaceFormatKHR> &surface_format_priority) const;
-
-	virtual void resize(uint32_t width, uint32_t height);
-
-	virtual void input_event(const InputEvent &input_event);
+	static std::unique_ptr<Window> create_window(Application *app, const Window::Properties &properties = Window::Properties());
 
 	template <class T>
 	T *get_plugin() const;
@@ -121,48 +67,22 @@ class Platform
 	template <class T>
 	bool using_plugin() const;
 
-	void force_simulation_fps(float fps);
-
-	void disable_input_processing();
-
-	void set_window_properties(const Window::Properties &properties);
-
 	void on_post_draw(RenderContext &context);
 
-	static const uint32_t MIN_WINDOW_WIDTH;
-	static const uint32_t MIN_WINDOW_HEIGHT;
-
   protected:
-	std::unique_ptr<CommandParser> parser;
 
 	std::vector<Plugin *> active_plugins;
 
 	std::unordered_map<Hook, std::vector<Plugin *>> hooks;
 
-//	std::unique_ptr<Application> active_app{nullptr};
-
 	virtual std::vector<spdlog::sink_ptr> get_platform_sinks();
 
 	void on_update(float delta_time);
-	void on_app_error(const std::string &app_id);
-	void on_app_start(const std::string &app_id);
-	void on_app_close(const std::string &app_id);
 	void on_platform_close();
-
-	Window::Properties window_properties;              /* Source of truth for window state */
-	bool               fixed_simulation_fps{false};    /* Delta time should be fixed with a fabricated value */
-	float              simulation_frame_time = 0.016f; /* A fabricated delta time */
-	bool               process_input_events{true};     /* App should continue processing input events */
-	bool               focused{true};                  /* App is currently in focus at an operating system level */
-	bool               close_requested{false};         /* Close requested */
 
   private:
 	/// Static so can be set via JNI code in android_platform.cpp
-	static std::vector<std::string> arguments;
-
-	static std::string external_storage_directory;
-
-	static std::string temp_directory;
+	//	static std::vector<std::string> arguments;
 };
 
 template <class T>

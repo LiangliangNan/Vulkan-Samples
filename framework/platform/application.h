@@ -19,9 +19,9 @@
 
 #include <string>
 
-#include "debug_info.h"
 #include "platform/platform.h"
 #include "platform/configuration.h"
+#include "debug_info.h"
 #include "input_events.h"
 #include "timer.h"
 #include "window.h"
@@ -33,7 +33,7 @@ namespace vkb {
 
     class Application {
     public:
-        Application();
+        Application(int argc, char** argv);
 
         virtual ~Application() = default;
 
@@ -43,14 +43,18 @@ namespace vkb {
          */
         virtual bool prepare();
 
-	    void main_loop();
+	    /**
+         * @brief Enters the main loop of the application.
+         * @return An exit code representing the outcome of the loop. EXIT_SUCCESS on success or EXIT_FAILURE on failure.
+	     */
+	    int run();
 
+	  public:
         /**
          * @brief Handles cleaning up the application
          */
         virtual void finish();
 
-	  public:
 	    /**
          * @brief Updates the application
          * @param delta_time The time since the last update
@@ -74,7 +78,7 @@ namespace vkb {
 
         void set_name(const std::string &name);
 
-//	DebugInfo &get_debug_info();
+		DebugInfo &get_debug_info() { return debug_info; }
 
     protected:
         float fps{0.0f};
@@ -84,14 +88,12 @@ namespace vkb {
         uint32_t frame_count{0};
 
         uint32_t last_frame_count{0};
-
-//	Platform *platform;
-
     private:
         std::string name{};
 
         // The debug info of the app
-//	DebugInfo debug_info{};
+		DebugInfo debug_info{};
+
 	  protected:
 	    Timer timer;
 	    std::unique_ptr<Window> window{nullptr};

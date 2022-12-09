@@ -71,7 +71,7 @@ const std::string to_string(VkResolveModeFlagBits mode)
 }
 }        // namespace
 
-MSAASample::MSAASample()
+MSAASample::MSAASample(int argc, char* argv[]) : vkb::VulkanSample(argc, argv)
 {
 	// Extension of interest in this sample (optional)
 	add_device_extension(VK_KHR_DEPTH_STENCIL_RESOLVE_EXTENSION_NAME, true);
@@ -828,7 +828,5 @@ int main(int argc, char *argv[])
 
 	MSAASample app;
 	app.prepare();
-	app.main_loop();
-	app.finish();
-	return EXIT_SUCCESS;
+	return app.run();
 }

@@ -204,14 +204,7 @@ bool VulkanSample::prepare()
 
 	return true;
 }
-//
-//void VulkanSample::create_device()
-//{
-//}
-//
-//void VulkanSample::create_instance()
-//{
-//}
+
 
 void VulkanSample::create_render_context() {
 	// We always want an sRGB surface to match the display.
@@ -512,34 +505,34 @@ void VulkanSample::draw_gui()
 
 void VulkanSample::update_debug_window()
 {
-//	auto        driver_version     = device->get_driver_version();
-//	std::string driver_version_str = fmt::format("major: {} minor: {} patch: {}", driver_version.major, driver_version.minor, driver_version.patch);
-//	get_debug_info().insert<field::Static, std::string>("driver_version", driver_version_str);
-//
-//	get_debug_info().insert<field::Static, std::string>("resolution",
-//	                                                    to_string(render_context->get_swapchain().get_extent()));
-//
-//	get_debug_info().insert<field::Static, std::string>("surface_format",
-//	                                                    to_string(render_context->get_swapchain().get_format()) + " (" +
-//	                                                        to_string(get_bits_per_pixel(render_context->get_swapchain().get_format())) + "bpp)");
-//
-//	if (scene != nullptr)
-//	{
-//		get_debug_info().insert<field::Static, uint32_t>("mesh_count",
-//		                                                 to_u32(scene->get_components<sg::SubMesh>().size()));
-//
-//		get_debug_info().insert<field::Static, uint32_t>("texture_count",
-//		                                                 to_u32(scene->get_components<sg::Texture>().size()));
-//
-//		if (auto camera = scene->get_components<vkb::sg::Camera>().at(0))
-//		{
-//			if (auto camera_node = camera->get_node())
-//			{
-//				const glm::vec3 &pos = camera_node->get_transform().get_translation();
-//				get_debug_info().insert<field::Vector, float>("camera_pos", pos.x, pos.y, pos.z);
-//			}
-//		}
-//	}
+	auto        driver_version     = device->get_driver_version();
+	std::string driver_version_str = fmt::format("major: {} minor: {} patch: {}", driver_version.major, driver_version.minor, driver_version.patch);
+	get_debug_info().insert<field::Static, std::string>("driver_version", driver_version_str);
+
+	get_debug_info().insert<field::Static, std::string>("resolution",
+	                                                    to_string(render_context->get_swapchain().get_extent()));
+
+	get_debug_info().insert<field::Static, std::string>("surface_format",
+	                                                    to_string(render_context->get_swapchain().get_format()) + " (" +
+	                                                        to_string(get_bits_per_pixel(render_context->get_swapchain().get_format())) + "bpp)");
+
+	if (scene != nullptr)
+	{
+		get_debug_info().insert<field::Static, uint32_t>("mesh_count",
+		                                                 to_u32(scene->get_components<sg::SubMesh>().size()));
+
+		get_debug_info().insert<field::Static, uint32_t>("texture_count",
+		                                                 to_u32(scene->get_components<sg::Texture>().size()));
+
+		if (auto camera = scene->get_components<vkb::sg::Camera>().at(0))
+		{
+			if (auto camera_node = camera->get_node())
+			{
+				const glm::vec3 &pos = camera_node->get_transform().get_translation();
+				get_debug_info().insert<field::Vector, float>("camera_pos", pos.x, pos.y, pos.z);
+			}
+		}
+	}
 }
 
 void VulkanSample::set_viewport_and_scissor(vkb::CommandBuffer &command_buffer, const VkExtent2D &extent)

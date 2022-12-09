@@ -63,7 +63,7 @@
 class MSAASample : public vkb::VulkanSample
 {
   public:
-	MSAASample();
+	MSAASample(int argc = 0, char** argv = nullptr);
 
 	virtual ~MSAASample() = default;
 

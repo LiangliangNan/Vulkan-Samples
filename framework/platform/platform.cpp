@@ -37,21 +37,10 @@
 
 namespace vkb
 {
-const uint32_t Platform::MIN_WINDOW_WIDTH  = 420;
-const uint32_t Platform::MIN_WINDOW_HEIGHT = 320;
 
-std::vector<std::string> Platform::arguments = {};
-
-std::string Platform::external_storage_directory = "";
-
-std::string Platform::temp_directory = "";
-
-
-
-Platform::Platform(const std::vector<Plugin *> &plugins)
+Platform::Platform(int argc, char* argv[])
 {
 	auto sinks = get_platform_sinks();
-
 	auto logger = std::make_shared<spdlog::logger>("logger", sinks.begin(), sinks.end());
 
 #ifdef VKB_DEBUG
@@ -65,217 +54,72 @@ Platform::Platform(const std::vector<Plugin *> &plugins)
 
 	LOGI("Logger initialized");
 
-	parser = std::make_unique<CLI11CommandParser>("vulkan_samples", "\n\tVulkan Samples\n\n\t\tA collection of samples to demonstrate the Vulkan best practice.\n", arguments);
+	const std::vector<Plugin *> plugins{};
+	LOGW("ToDo: create plugins available to the platform; also parse the commandline and respond");
+	// ...
+
+//	parser = std::make_unique<CLI11CommandParser>("vulkan_samples", "\n\tVulkan Samples\n\n\t\tA collection of samples to demonstrate the Vulkan best practice.\n", arguments);
 
 	// Process command line arguments
-	if (!parser->parse(associate_plugins(plugins)))
-	{
-		// show help here
-		// ...
-		return;
-	}
+//	if (!parser->parse(associate_plugins(plugins)))
+//	{
+//		// show help here
+//		// ...
+//		return;
+//	}
 
 	// Subscribe plugins to requested hooks and store activated plugins
-	for (auto *plugin : plugins)
-	{
-		if (plugin->activate_plugin(this, *parser.get()))
-		{
-			auto &plugin_hooks = plugin->get_hooks();
-			for (auto hook : plugin_hooks)
-			{
-				auto it = hooks.find(hook);
-
-				if (it == hooks.end())
-				{
-					auto r = hooks.emplace(hook, std::vector<Plugin *>{});
-
-					if (r.second)
-					{
-						it = r.first;
-					}
-				}
-
-				it->second.emplace_back(plugin);
-			}
-
-			active_plugins.emplace_back(plugin);
-		}
-	}
-
-	// Platform has been closed by a plugins initialization phase
-	if (close_requested)
-	{
-		return;
-	}
-}
-
-ExitCode Platform::main_loop()
-{
-//	if (!app_requested())
+//	for (auto *plugin : plugins)
 //	{
-//		LOGI("An app was not requested, can not continue");
-//		return ExitCode::Close;
-//	}
-//
-//	while (!window->should_close() && !close_requested)
-//	{
-//		try
+//		if (plugin->activate_plugin(this, *parser.get()))
 //		{
-//			// Load the requested app
-//			if (app_requested())
+//			auto &plugin_hooks = plugin->get_hooks();
+//			for (auto hook : plugin_hooks)
 //			{
-//				if (!start_app())
+//				auto it = hooks.find(hook);
+//
+//				if (it == hooks.end())
 //				{
-//					LOGE("Failed to load requested application");
-//					return ExitCode::FatalError;
+//					auto r = hooks.emplace(hook, std::vector<Plugin *>{});
+//
+//					if (r.second)
+//					{
+//						it = r.first;
+//					}
 //				}
 //
-//				// Compensate for load times of the app by rendering the first frame pre-emptively
-//				timer.tick<Timer::Seconds>();
-////				active_app->update(0.01667f);
+//				it->second.emplace_back(plugin);
 //			}
 //
-//			update();
-//
-//			window->process_events();
-//		}
-//		catch (std::exception &e)
-//		{
-//			LOGE("Error Message: {}", e.what());
-////			LOGE("Failed when running application {}", active_app->get_name());
-//
-////			on_app_error(active_app->get_name());
-//
-//			if (app_requested())
-//			{
-//				LOGI("Attempting to load next application");
-//			}
-//			else
-//			{
-//				return ExitCode::FatalError;
-//			}
+//			active_plugins.emplace_back(plugin);
 //		}
 //	}
 
-	return ExitCode::Success;
-}
-
-void Platform::update()
-{
-//	auto delta_time = static_cast<float>(timer.tick<Timer::Seconds>());
-//
-//	if (focused)
+//	// Platform has been closed by a plugins initialization phase
+//	if (close_requested)
 //	{
-//		on_update(delta_time);
-//
-//		if (fixed_simulation_fps)
-//		{
-//			delta_time = simulation_frame_time;
-//		}
-//
-////		active_app->update(delta_time);
+//		return;
 //	}
 }
 
-std::unique_ptr<RenderContext> Platform::create_render_context(Device &device, VkSurfaceKHR surface, const std::vector<VkSurfaceFormatKHR> &surface_format_priority) const
-{
-//	assert(!surface_format_priority.empty() && "Surface format priority list must contain at least one preferred surface format");
-//
-//	auto context = std::make_unique<RenderContext>(device, surface, *window);
-//
-//	context->set_surface_format_priority(surface_format_priority);
-//
-//	context->request_image_format(surface_format_priority[0].format);
-//
-//	context->set_present_mode_priority({
-//	    VK_PRESENT_MODE_MAILBOX_KHR,
-//	    VK_PRESENT_MODE_FIFO_KHR,
-//	    VK_PRESENT_MODE_IMMEDIATE_KHR,
-//	});
-//
-//	switch (window_properties.vsync)
-//	{
-//		case Window::Vsync::ON:
-//			context->request_present_mode(VK_PRESENT_MODE_FIFO_KHR);
-//			break;
-//		case Window::Vsync::OFF:
-//		default:
-//			context->request_present_mode(VK_PRESENT_MODE_MAILBOX_KHR);
-//			break;
-//	}
 
-//	return std::move(context);
-return nullptr;
-}
-
-void Platform::terminate(ExitCode code)
-{
-	if (code == ExitCode::Help)
-	{
-		auto help = parser->help();
-		for (auto &line : help)
-		{
-			LOGI(line);
-		}
-	}
-
-//	if (active_app)
-//	{
-//		std::string id = active_app->get_name();
-//
-//		on_app_close(id);
-//
-//		active_app->finish();
-//	}
-//
-//	active_app.reset();
-//	window.reset();
-
+Platform::~Platform() {
 	spdlog::drop_all();
-
-	on_platform_close();
-
-	// Halt on all unsuccessful exit codes unless ForceClose is in use
-//	if (code != ExitCode::Success && !using_plugin<::plugins::ForceClose>())
-	{
-#ifndef ANDROID
-		std::cout << "Press any key to continue";
-		std::cin.get();
-#endif
-	}
 }
 
-void Platform::close()
-{
-//	if (window)
-//	{
-//		window->close();
-//	}
-
-	// Fallback incase a window is not yet in use
-	close_requested = true;
+void Platform::update(float delta_time) {
+	on_update(delta_time);
 }
 
-void Platform::force_simulation_fps(float fps)
-{
-	fixed_simulation_fps  = true;
-	simulation_frame_time = 1 / fps;
+bool Platform::should_close() const {
+    return false;
 }
 
-void Platform::disable_input_processing()
-{
-	process_input_events = false;
+void Platform::finish() {
+	// finish the jobs of plugins...
+	LOGI("Plugins terminated");
 }
 
-const std::string &Platform::get_external_storage_directory()
-{
-	return external_storage_directory;
-}
-
-const std::string &Platform::get_temp_directory()
-{
-	return temp_directory;
-}
 
 std::unique_ptr<Window> Platform::create_window(Application* app, const Window::Properties &properties) {
 #if __APPLE__
@@ -299,85 +143,6 @@ std::vector<spdlog::sink_ptr> Platform::get_platform_sinks()
 	return sinks;
 }
 
-//bool Platform::app_requested()
-//{
-//	return false; //requested_app != nullptr;
-//}
-
-//void Platform::request_application(const apps::AppInfo *app)
-//{
-//	requested_app = app;
-//}
-//
-//bool Platform::start_app()
-//{
-//	auto *requested_app_info = requested_app;
-//	// Reset early incase error in preperation stage
-//	requested_app = nullptr;
-//
-//	if (active_app)
-//	{
-//		auto execution_time = timer.stop();
-//		LOGI("Closing App (Runtime: {:.1f})", execution_time);
-//
-//		auto app_id = active_app->get_name();
-//
-//		active_app->finish();
-//	}
-//
-//	active_app = requested_app_info->create();
-//
-//	active_app->set_name(requested_app_info->id);
-//
-//	if (!active_app)
-//	{
-//		LOGE("Failed to create a valid vulkan app.");
-//		return false;
-//	}
-//
-//	if (!active_app->prepare())
-//	{
-//		LOGE("Failed to prepare vulkan app.");
-//		return false;
-//	}
-//
-//	on_app_start(requested_app_info->id);
-//
-//	return true;
-//}
-
-void Platform::input_event(const InputEvent &input_event)
-{
-//	if (process_input_events && active_app)
-//	{
-//		active_app->input_event(input_event);
-//	}
-//
-//	if (input_event.get_source() == EventSource::Keyboard)
-//	{
-//		const auto &key_event = static_cast<const KeyInputEvent &>(input_event);
-//
-//		if (key_event.get_code() == KeyCode::Back ||
-//		    key_event.get_code() == KeyCode::Escape)
-//		{
-//			close();
-//		}
-//	}
-}
-
-void Platform::resize(uint32_t width, uint32_t height)
-{
-//	auto extent = Window::Extent{std::max<uint32_t>(width, MIN_WINDOW_WIDTH), std::max<uint32_t>(height, MIN_WINDOW_HEIGHT)};
-//	if ((window) && (width > 0) && (height > 0))
-	{
-//		auto actual_extent = window->resize(extent);
-
-//		if (active_app)
-//		{
-//			active_app->resize(actual_extent.width, actual_extent.height);
-//		}
-	}
-}
 
 #define HOOK(enum, func)                \
 	static auto res = hooks.find(enum); \
@@ -394,24 +159,9 @@ void Platform::on_post_draw(RenderContext &context)
 	HOOK(Hook::PostDraw, on_post_draw(context));
 }
 
-void Platform::on_app_error(const std::string &app_id)
-{
-	HOOK(Hook::OnAppError, on_app_error(app_id));
-}
-
 void Platform::on_update(float delta_time)
 {
 	HOOK(Hook::OnUpdate, on_update(delta_time));
-}
-
-void Platform::on_app_start(const std::string &app_id)
-{
-	HOOK(Hook::OnAppStart, on_app_start(app_id));
-}
-
-void Platform::on_app_close(const std::string &app_id)
-{
-	HOOK(Hook::OnAppClose, on_app_close(app_id));
 }
 
 void Platform::on_platform_close()

@@ -32,6 +32,9 @@ namespace fs
 {
 namespace path
 {
+std::string external_storage_directory = "";
+std::string temp_directory = "";
+
 const std::unordered_map<Type, std::string> relative_paths = {{Type::Assets, std::string(ASSETS_DIR) + "/"},
                                                               {Type::Shaders, std::string(SHADERS_DIR) + "/"},
                                                               {Type::Storage, std::string(OUTPUT_DIR) + "/"},
@@ -46,11 +49,11 @@ const std::string get(const Type type, const std::string &file)
 	// Check for special cases first
 	if (type == Type::WorkingDir)
 	{
-		return Platform::get_external_storage_directory();
+		return external_storage_directory;
 	}
 	else if (type == Type::Temp)
 	{
-		return Platform::get_temp_directory();
+		return temp_directory;
 	}
 
 	// Check for relative paths
@@ -69,11 +72,11 @@ const std::string get(const Type type, const std::string &file)
 		throw std::runtime_error("Path was found, but it is empty");
 	}
 
-	auto path = Platform::get_external_storage_directory() + it->second;
+	auto path = external_storage_directory + it->second;
 
 	if (!is_directory(path))
 	{
-		create_path(Platform::get_external_storage_directory(), it->second);
+		create_path(external_storage_directory, it->second);
 	}
 
 	return path + file;
