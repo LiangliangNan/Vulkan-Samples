@@ -66,13 +66,13 @@ namespace vkb {
          * @param width New width of the window
          * @param height New height of the window
          */
-        virtual bool resize(const uint32_t width, const uint32_t height);
+        virtual bool resize(const uint32_t width, const uint32_t height) { return true; }
 
         /**
          * @brief Handles input events of the window
          * @param input_event The input event object
          */
-        virtual void input_event(const InputEvent &input_event);
+        virtual void input_event(const InputEvent &input_event) {}
 
         const std::string &get_name() const;
 

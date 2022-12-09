@@ -67,6 +67,7 @@ class Platform
 	template <class T>
 	bool using_plugin() const;
 
+	/// Implementation of post draw (for, e.g., additional draw of a plugin).
 	void on_post_draw(RenderContext &context);
 
   protected:

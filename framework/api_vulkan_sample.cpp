@@ -96,7 +96,7 @@ void ApiVulkanSample::update(float delta_time)
 		view_updated = true;
 	}
 
-	//platform->on_post_draw(get_render_context());
+	platform->on_post_draw(get_render_context());
 }
 
 bool ApiVulkanSample::resize(const uint32_t _width, const uint32_t _height)

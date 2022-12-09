@@ -69,30 +69,6 @@ void Application::finish()
 	platform->finish();
 }
 
-bool Application::resize(const uint32_t /*width*/, const uint32_t /*height*/)
-{
-	return true;
-}
-
-void Application::input_event(const InputEvent &input_event)
-{
-	//	    if (process_input_events && active_app)
-	//	    {
-	//		    active_app->input_event(input_event);
-	//	    }
-	//
-	//	    if (input_event.get_source() == EventSource::Keyboard)
-	//	    {
-	//		    const auto &key_event = static_cast<const KeyInputEvent &>(input_event);
-	//
-	//		    if (key_event.get_code() == KeyCode::Back ||
-	//		        key_event.get_code() == KeyCode::Escape)
-	//		    {
-	//			    close();
-	//		    }
-	//	    }
-}
-
 void Application::update(float delta_time)
 {
 	fps        = 1.0f / delta_time;

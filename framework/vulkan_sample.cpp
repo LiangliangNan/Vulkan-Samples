@@ -336,7 +336,7 @@ void VulkanSample::update(float delta_time)
 
 	render_context->submit(command_buffer);
 
-//	platform->on_post_draw(get_render_context());
+	platform->on_post_draw(get_render_context());
 }
 
 void VulkanSample::draw(CommandBuffer &command_buffer, RenderTarget &render_target)
