@@ -305,8 +305,7 @@ void VulkanSample::update_gui(float delta_time)
 
 		gui->new_frame();
 
-//		gui->show_top_window(get_name(), stats.get(), &get_debug_info());
-		gui->show_top_window(get_name(), stats.get(), nullptr);
+		gui->show_top_window(get_name(), stats.get(), &get_debug_info());
 
 		// Samples can override this
 		draw_gui();
@@ -416,7 +415,7 @@ bool VulkanSample::on_resize(uint32_t width, uint32_t height)
 
 	if (gui)
 	{
-		gui->on_resize(width, height);
+		gui->resize(width, height);
 	}
 
 	if (scene && scene->has_component<sg::Script>())
@@ -425,7 +424,7 @@ bool VulkanSample::on_resize(uint32_t width, uint32_t height)
 
 		for (auto script : scripts)
 		{
-			script->on_resize(width, height);
+			script->resize(width, height);
 		}
 	}
 

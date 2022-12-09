@@ -140,7 +140,7 @@ bool ApiVulkanSample::on_resize(const uint32_t _width, const uint32_t _height)
 	{
 		if (gui)
 		{
-			gui->on_resize(width, height);
+			gui->resize(width, height);
 		}
 	}
 

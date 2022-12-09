@@ -84,9 +84,9 @@ const std::string &Application::get_name() const
 	return window->get_properties().title;
 }
 
-void Application::set_name(const std::string &name_)
+void Application::set_name(const std::string &name)
 {
-	window->set_title(name_);
+	window->set_title(name);
 }
 
 }        // namespace vkb

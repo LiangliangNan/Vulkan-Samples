@@ -226,7 +226,7 @@ void FreeCamera::input_event(const InputEvent &input_event)
 	}
 }
 
-void FreeCamera::on_resize(uint32_t width, uint32_t height)
+void FreeCamera::resize(uint32_t width, uint32_t height)
 {
 	auto &camera_node = get_node();
 

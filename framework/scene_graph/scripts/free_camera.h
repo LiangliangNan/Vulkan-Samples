@@ -58,7 +58,7 @@ class FreeCamera : public NodeScript
 
 	virtual void input_event(const InputEvent &input_event) override;
 
-	virtual void on_resize(uint32_t width, uint32_t height) override;
+	virtual void resize(uint32_t width, uint32_t height) override;
 
   private:
 	float speed_multiplier{3.0f};

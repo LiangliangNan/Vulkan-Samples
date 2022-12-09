@@ -913,9 +913,9 @@ void HDR::on_update_ui_overlay(vkb::Drawer &drawer)
 	}
 }
 
-bool HDR::resize(const uint32_t width, const uint32_t height)
+bool HDR::on_resize(const uint32_t width, const uint32_t height)
 {
-	ApiVulkanSample::resize(width, height);
+	ApiVulkanSample::on_resize(width, height);
 	update_uniform_buffers();
 	return true;
 }

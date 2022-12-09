@@ -49,7 +49,7 @@ class Script : public Component
 
 	virtual void input_event(const InputEvent &input_event);
 
-	virtual void on_resize(uint32_t width, uint32_t height);
+	virtual void resize(uint32_t width, uint32_t height);
 };
 
 class NodeScript : public Script

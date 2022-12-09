@@ -1125,7 +1125,7 @@ void HelloTriangle::update(float delta_time)
 	// Handle outdated error in acquire.
 	if (res == VK_SUBOPTIMAL_KHR || res == VK_ERROR_OUT_OF_DATE_KHR)
 	{
-		resize(context.swapchain_dimensions.width, context.swapchain_dimensions.height);
+		on_resize(context.swapchain_dimensions.width, context.swapchain_dimensions.height);
 		res = acquire_next_image(context, &index);
 	}
 
@@ -1141,7 +1141,7 @@ void HelloTriangle::update(float delta_time)
 	// Handle Outdated error in present.
 	if (res == VK_SUBOPTIMAL_KHR || res == VK_ERROR_OUT_OF_DATE_KHR)
 	{
-		resize(context.swapchain_dimensions.width, context.swapchain_dimensions.height);
+		on_resize(context.swapchain_dimensions.width, context.swapchain_dimensions.height);
 	}
 	else if (res != VK_SUCCESS)
 	{
@@ -1149,7 +1149,7 @@ void HelloTriangle::update(float delta_time)
 	}
 }
 
-bool HelloTriangle::resize(const uint32_t, const uint32_t)
+bool HelloTriangle::on_resize(const uint32_t, const uint32_t)
 {
 	if (context.device == VK_NULL_HANDLE)
 	{

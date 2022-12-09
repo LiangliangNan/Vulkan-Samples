@@ -376,7 +376,7 @@ void Gui::update(const float delta_time)
 	// Update imGui
 	ImGuiIO &io     = ImGui::GetIO();
 	auto     extent = sample.get_render_context().get_surface_extent();
-	on_resize(extent.width, extent.height);
+	resize(extent.width, extent.height);
 	io.DeltaTime = delta_time;
 
 	// Render to generate draw buffers
@@ -477,7 +477,7 @@ void Gui::update_buffers(CommandBuffer &command_buffer, RenderFrame &render_fram
 	command_buffer.bind_index_buffer(index_allocation.get_buffer(), index_allocation.get_offset(), VK_INDEX_TYPE_UINT16);
 }
 
-void Gui::on_resize(const uint32_t width, const uint32_t height) const
+void Gui::resize(const uint32_t width, const uint32_t height) const
 {
 	auto &io         = ImGui::GetIO();
 	io.DisplaySize.x = static_cast<float>(width);

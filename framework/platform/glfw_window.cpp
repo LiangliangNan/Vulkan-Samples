@@ -322,8 +322,8 @@ namespace vkb {
         glfwSetWindowShouldClose(handle, GLFW_TRUE);
     }
 
-/// @brief It calculates the dpi factor using the density from GLFW physical size
-/// <a href="https://www.glfw.org/docs/latest/monitor_guide.html#monitor_size">GLFW docs for dpi</a>
+	/// @brief It calculates the dpi factor using the density from GLFW physical size
+	/// <a href="https://www.glfw.org/docs/latest/monitor_guide.html#monitor_size">GLFW docs for dpi</a>
     float GlfwWindow::get_dpi_factor() const {
         auto primary_monitor = glfwGetPrimaryMonitor();
         auto vidmode = glfwGetVideoMode(primary_monitor);
@@ -358,9 +358,11 @@ namespace vkb {
     }
 
     void GlfwWindow::set_title(const std::string& title) {
-	    Window::set_title(title);
 	    if (!title.empty())
+	    {
 		    glfwSetWindowTitle(handle, title.c_str());
+		    Window::set_title(title);
+	    }
 	    else
 		    LOGW("empty title string provided");
     }
