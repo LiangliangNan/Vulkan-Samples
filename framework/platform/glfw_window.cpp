@@ -331,6 +331,14 @@ namespace vkb {
         return glfwWindowShouldClose(handle);
     }
 
+    bool GlfwWindow::is_visible() const {
+	    return (glfwGetWindowAttrib(handle, GLFW_VISIBLE) != 0);
+    }
+
+    bool GlfwWindow::is_focused() const {
+	    return (glfwGetWindowAttrib(handle, GLFW_FOCUSED) != 0);
+    }
+
     void GlfwWindow::process_events() {
         glfwPollEvents();
     }

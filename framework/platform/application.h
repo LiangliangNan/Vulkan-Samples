@@ -96,10 +96,8 @@ namespace vkb {
 	    Timer timer;
 	    std::unique_ptr<Window> window{nullptr};
 
+	    std::unique_ptr<Platform> platform{nullptr};
+
 	    Window &get_window() const { return *window; }
-
-	    static std::string external_storage_directory;
-
-	    static std::string temp_directory;
     };
 }        // namespace vkb

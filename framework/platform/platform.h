@@ -53,16 +53,14 @@ class Application;
 class Platform
 {
   public:
-	Platform() = default;
-
-	virtual ~Platform() = default;
-
 	/**
 	 * @brief Initialize the platform
 	 * @param plugins plugins available to the platform
 	 * @return An exit code representing the outcome of initialization
 	 */
-	virtual ExitCode initialize(const std::vector<Plugin *> &plugins);
+	explicit Platform(const std::vector<Plugin *> &plugins = {});
+
+	virtual ~Platform() = default;
 
 	/**
 		 * @brief Handles the creation of the window
@@ -99,17 +97,17 @@ class Platform
 	 * @returns The path to the working directory
 	 */
 	static const std::string &get_external_storage_directory();
-
 	/**
 	 * @brief Returns the suitable directory for temporary files from the environment variables set in the system
 	 * @returns The path to the temp folder on the system
 	 */
 	static const std::string &get_temp_directory();
 
+
 	/**
 	 * @return The VkInstance extension name for the platform
 	 */
-	virtual const char *get_surface_extension() = 0;
+//	virtual const char *get_surface_extension() = 0;
 
 	virtual std::unique_ptr<RenderContext> create_render_context(Device &device, VkSurfaceKHR surface, const std::vector<VkSurfaceFormatKHR> &surface_format_priority) const;
 
@@ -117,33 +115,11 @@ class Platform
 
 	virtual void input_event(const InputEvent &input_event);
 
-	Window &get_window();
-
-//	Application &get_app() const;
-//
-//	Application &get_app();
-
-	std::vector<std::string> &get_arguments();
-
-	static void set_arguments(const std::vector<std::string> &args);
-
-	static void set_external_storage_directory(const std::string &dir);
-
-	static void set_temp_directory(const std::string &dir);
-
 	template <class T>
 	T *get_plugin() const;
 
 	template <class T>
 	bool using_plugin() const;
-
-	void set_focus(bool focused);
-
-//	void request_application(const apps::AppInfo *app);
-
-	bool app_requested();
-
-	bool start_app();
 
 	void force_simulation_fps(float fps);
 
@@ -181,12 +157,6 @@ class Platform
 	bool               close_requested{false};         /* Close requested */
 
   private:
-	Timer timer;
-
-//	const apps::AppInfo *requested_app{nullptr};
-	std::unique_ptr<Window> window{nullptr};
-	std::vector<Plugin *> plugins;
-
 	/// Static so can be set via JNI code in android_platform.cpp
 	static std::vector<std::string> arguments;
 

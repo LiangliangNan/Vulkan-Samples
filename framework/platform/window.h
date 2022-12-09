@@ -89,6 +89,9 @@ namespace vkb {
          */
         virtual bool should_close() = 0;
 
+	    virtual bool is_visible() const = 0;
+	    virtual bool is_focused() const = 0;
+
         /**
          * @brief Handles the processing of all underlying window events
          */

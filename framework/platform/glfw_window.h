@@ -44,6 +44,9 @@ namespace vkb {
 
         bool should_close() override;
 
+	    bool is_visible() const override;
+	    bool is_focused() const override;
+
         void process_events() override;
 
         void close() override;

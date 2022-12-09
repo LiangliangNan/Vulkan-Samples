@@ -25,14 +25,11 @@
 
 namespace vkb {
 
-std::string Application::external_storage_directory = "";
-
-std::string Application::temp_directory = "";
 
     Application::Application() :
             name{"Sample Name"} {
-	    auto win = Platform::create_window(this);
-	    window = std::move(win);
+	    platform = std::make_unique<Platform>();
+	    window = platform->create_window(this);
     }
 
     bool Application::prepare() {
@@ -47,7 +44,7 @@ std::string Application::temp_directory = "";
 
 			    auto delta_time = static_cast<float>(timer.tick<Timer::Seconds>());
 
-//			    if (focused)
+			    if (window->is_visible() /* && window->is_focused()*/)
 			    {
 //				    on_update(delta_time);
 

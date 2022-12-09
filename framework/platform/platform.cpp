@@ -46,7 +46,9 @@ std::string Platform::external_storage_directory = "";
 
 std::string Platform::temp_directory = "";
 
-ExitCode Platform::initialize(const std::vector<Plugin *> &plugins = {})
+
+
+Platform::Platform(const std::vector<Plugin *> &plugins)
 {
 	auto sinks = get_platform_sinks();
 
@@ -68,7 +70,9 @@ ExitCode Platform::initialize(const std::vector<Plugin *> &plugins = {})
 	// Process command line arguments
 	if (!parser->parse(associate_plugins(plugins)))
 	{
-		return ExitCode::Help;
+		// show help here
+		// ...
+		return;
 	}
 
 	// Subscribe plugins to requested hooks and store activated plugins
@@ -101,116 +105,107 @@ ExitCode Platform::initialize(const std::vector<Plugin *> &plugins = {})
 	// Platform has been closed by a plugins initialization phase
 	if (close_requested)
 	{
-		return ExitCode::Close;
+		return;
 	}
-
-//	create_window(window_properties);
-
-	if (!window)
-	{
-		LOGE("Window creation failed!");
-		return ExitCode::FatalError;
-	}
-
-	return ExitCode::Success;
 }
 
 ExitCode Platform::main_loop()
 {
-	if (!app_requested())
-	{
-		LOGI("An app was not requested, can not continue");
-		return ExitCode::Close;
-	}
-
-	while (!window->should_close() && !close_requested)
-	{
-		try
-		{
-			// Load the requested app
-			if (app_requested())
-			{
-				if (!start_app())
-				{
-					LOGE("Failed to load requested application");
-					return ExitCode::FatalError;
-				}
-
-				// Compensate for load times of the app by rendering the first frame pre-emptively
-				timer.tick<Timer::Seconds>();
-//				active_app->update(0.01667f);
-			}
-
-			update();
-
-			window->process_events();
-		}
-		catch (std::exception &e)
-		{
-			LOGE("Error Message: {}", e.what());
-//			LOGE("Failed when running application {}", active_app->get_name());
-
-//			on_app_error(active_app->get_name());
-
-			if (app_requested())
-			{
-				LOGI("Attempting to load next application");
-			}
-			else
-			{
-				return ExitCode::FatalError;
-			}
-		}
-	}
+//	if (!app_requested())
+//	{
+//		LOGI("An app was not requested, can not continue");
+//		return ExitCode::Close;
+//	}
+//
+//	while (!window->should_close() && !close_requested)
+//	{
+//		try
+//		{
+//			// Load the requested app
+//			if (app_requested())
+//			{
+//				if (!start_app())
+//				{
+//					LOGE("Failed to load requested application");
+//					return ExitCode::FatalError;
+//				}
+//
+//				// Compensate for load times of the app by rendering the first frame pre-emptively
+//				timer.tick<Timer::Seconds>();
+////				active_app->update(0.01667f);
+//			}
+//
+//			update();
+//
+//			window->process_events();
+//		}
+//		catch (std::exception &e)
+//		{
+//			LOGE("Error Message: {}", e.what());
+////			LOGE("Failed when running application {}", active_app->get_name());
+//
+////			on_app_error(active_app->get_name());
+//
+//			if (app_requested())
+//			{
+//				LOGI("Attempting to load next application");
+//			}
+//			else
+//			{
+//				return ExitCode::FatalError;
+//			}
+//		}
+//	}
 
 	return ExitCode::Success;
 }
 
 void Platform::update()
 {
-	auto delta_time = static_cast<float>(timer.tick<Timer::Seconds>());
-
-	if (focused)
-	{
-		on_update(delta_time);
-
-		if (fixed_simulation_fps)
-		{
-			delta_time = simulation_frame_time;
-		}
-
-//		active_app->update(delta_time);
-	}
+//	auto delta_time = static_cast<float>(timer.tick<Timer::Seconds>());
+//
+//	if (focused)
+//	{
+//		on_update(delta_time);
+//
+//		if (fixed_simulation_fps)
+//		{
+//			delta_time = simulation_frame_time;
+//		}
+//
+////		active_app->update(delta_time);
+//	}
 }
 
 std::unique_ptr<RenderContext> Platform::create_render_context(Device &device, VkSurfaceKHR surface, const std::vector<VkSurfaceFormatKHR> &surface_format_priority) const
 {
-	assert(!surface_format_priority.empty() && "Surface format priority list must contain at least one preferred surface format");
+//	assert(!surface_format_priority.empty() && "Surface format priority list must contain at least one preferred surface format");
+//
+//	auto context = std::make_unique<RenderContext>(device, surface, *window);
+//
+//	context->set_surface_format_priority(surface_format_priority);
+//
+//	context->request_image_format(surface_format_priority[0].format);
+//
+//	context->set_present_mode_priority({
+//	    VK_PRESENT_MODE_MAILBOX_KHR,
+//	    VK_PRESENT_MODE_FIFO_KHR,
+//	    VK_PRESENT_MODE_IMMEDIATE_KHR,
+//	});
+//
+//	switch (window_properties.vsync)
+//	{
+//		case Window::Vsync::ON:
+//			context->request_present_mode(VK_PRESENT_MODE_FIFO_KHR);
+//			break;
+//		case Window::Vsync::OFF:
+//		default:
+//			context->request_present_mode(VK_PRESENT_MODE_MAILBOX_KHR);
+//			break;
+//	}
 
-	auto context = std::make_unique<RenderContext>(device, surface, *window);
-
-	context->set_surface_format_priority(surface_format_priority);
-
-	context->request_image_format(surface_format_priority[0].format);
-
-	context->set_present_mode_priority({
-	    VK_PRESENT_MODE_MAILBOX_KHR,
-	    VK_PRESENT_MODE_FIFO_KHR,
-	    VK_PRESENT_MODE_IMMEDIATE_KHR,
-	});
-
-	switch (window_properties.vsync)
-	{
-		case Window::Vsync::ON:
-			context->request_present_mode(VK_PRESENT_MODE_FIFO_KHR);
-			break;
-		case Window::Vsync::OFF:
-		default:
-			context->request_present_mode(VK_PRESENT_MODE_MAILBOX_KHR);
-			break;
-	}
-
-	return std::move(context);
+//	return std::move(context);
+return nullptr;
 }
 
 void Platform::terminate(ExitCode code)
@@ -234,7 +229,7 @@ void Platform::terminate(ExitCode code)
 //	}
 //
 //	active_app.reset();
-	window.reset();
+//	window.reset();
 
 	spdlog::drop_all();
 
@@ -252,10 +247,10 @@ void Platform::terminate(ExitCode code)
 
 void Platform::close()
 {
-	if (window)
-	{
-		window->close();
-	}
+//	if (window)
+//	{
+//		window->close();
+//	}
 
 	// Fallback incase a window is not yet in use
 	close_requested = true;
@@ -272,22 +267,6 @@ void Platform::disable_input_processing()
 	process_input_events = false;
 }
 
-void Platform::set_focus(bool _focused)
-{
-	focused = _focused;
-}
-
-void Platform::set_window_properties(const Window::Properties &properties)
-{
-	window_properties = properties;
-//	window_properties.title         = properties.title.has_value() ? properties.title.value() : window_properties.title;
-//	window_properties.mode          = properties.mode.has_value() ? properties.mode.value() : window_properties.mode;
-//	window_properties.resizable     = properties.resizable.has_value() ? properties.resizable.value() : window_properties.resizable;
-//	window_properties.vsync         = properties.vsync.has_value() ? properties.vsync.value() : window_properties.vsync;
-//	window_properties.extent.width  = properties.extent.width.has_value() ? properties.extent.width.value() : window_properties.extent.width;
-//	window_properties.extent.height = properties.extent.height.has_value() ? properties.extent.height.value() : window_properties.extent.height;
-}
-
 const std::string &Platform::get_external_storage_directory()
 {
 	return external_storage_directory;
@@ -298,25 +277,12 @@ const std::string &Platform::get_temp_directory()
 	return temp_directory;
 }
 
-//Application &Platform::get_app()
-//{
-//	assert(active_app && "Application is not valid");
-//	return *active_app;
-//}
-//
-//Application &Platform::get_app() const
-//{
-//	assert(active_app && "Application is not valid");
-//	return *active_app;
-//}
-
-
 std::unique_ptr<Window> Platform::create_window(Application* app, const Window::Properties &properties) {
 #if __APPLE__
-	// Android window uses native window size
-	// Required so that the vulkan sample can create a VkSurface
 	return std::make_unique<GlfwWindow>(app, properties);
 #else
+	// Android window uses native window size
+	// Required so that the vulkan sample can create a VkSurface
 	std::cerr << "don't how to create a window on this platform:"
 	          << "\n\tLine: " << __LINE__
 	          << "\n\tFunction: " << __FUNCTION__
@@ -325,25 +291,6 @@ std::unique_ptr<Window> Platform::create_window(Application* app, const Window::
 #endif
 }
 
-std::vector<std::string> &Platform::get_arguments()
-{
-	return Platform::arguments;
-}
-
-void Platform::set_arguments(const std::vector<std::string> &args)
-{
-	arguments = args;
-}
-
-void Platform::set_external_storage_directory(const std::string &dir)
-{
-	external_storage_directory = dir;
-}
-
-void Platform::set_temp_directory(const std::string &dir)
-{
-	temp_directory = dir;
-}
 
 std::vector<spdlog::sink_ptr> Platform::get_platform_sinks()
 {
@@ -352,18 +299,18 @@ std::vector<spdlog::sink_ptr> Platform::get_platform_sinks()
 	return sinks;
 }
 
-bool Platform::app_requested()
-{
-	return false; //requested_app != nullptr;
-}
+//bool Platform::app_requested()
+//{
+//	return false; //requested_app != nullptr;
+//}
 
 //void Platform::request_application(const apps::AppInfo *app)
 //{
 //	requested_app = app;
 //}
 //
-bool Platform::start_app()
-{
+//bool Platform::start_app()
+//{
 //	auto *requested_app_info = requested_app;
 //	// Reset early incase error in preperation stage
 //	requested_app = nullptr;
@@ -396,8 +343,8 @@ bool Platform::start_app()
 //
 //	on_app_start(requested_app_info->id);
 //
-	return true;
-}
+//	return true;
+//}
 
 void Platform::input_event(const InputEvent &input_event)
 {
@@ -420,10 +367,10 @@ void Platform::input_event(const InputEvent &input_event)
 
 void Platform::resize(uint32_t width, uint32_t height)
 {
-	auto extent = Window::Extent{std::max<uint32_t>(width, MIN_WINDOW_WIDTH), std::max<uint32_t>(height, MIN_WINDOW_HEIGHT)};
-	if ((window) && (width > 0) && (height > 0))
+//	auto extent = Window::Extent{std::max<uint32_t>(width, MIN_WINDOW_WIDTH), std::max<uint32_t>(height, MIN_WINDOW_HEIGHT)};
+//	if ((window) && (width > 0) && (height > 0))
 	{
-		auto actual_extent = window->resize(extent);
+//		auto actual_extent = window->resize(extent);
 
 //		if (active_app)
 //		{
