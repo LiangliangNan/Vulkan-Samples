@@ -476,9 +476,9 @@ void HlslShaders::update_uniform_buffers()
 	uniform_buffer_vs->convert_and_update(ubo_vs);
 }
 
-bool HlslShaders::prepare(vkb::Platform &platform)
+bool HlslShaders::prepare()
 {
-	if (!ApiVulkanSample::prepare(platform))
+	if (!ApiVulkanSample::prepare())
 	{
 		return false;
 	}
@@ -509,4 +509,21 @@ void HlslShaders::view_changed()
 std::unique_ptr<vkb::Application> create_hlsl_shaders()
 {
 	return std::make_unique<HlslShaders>();
+}
+
+
+
+#include "platform/unix/unix_platform.h"
+int main(int argc, char *argv[])
+{
+	vkb::UnixPlatform platform{vkb::UnixType::Mac, argc, argv};
+	auto code = platform.initialize({});
+	if (code == vkb::ExitCode::Success) {
+		apps::AppInfo info("My-app", create_hlsl_shaders);
+		platform.request_application(&info);
+		code = platform.main_loop();
+	}
+
+	platform.terminate(code);
+	return EXIT_SUCCESS;
 }

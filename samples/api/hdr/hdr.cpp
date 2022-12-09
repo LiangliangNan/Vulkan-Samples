@@ -854,7 +854,7 @@ void HDR::draw()
 	ApiVulkanSample::submit_frame();
 }
 
-bool HDR::prepare(vkb::Platform &platform)
+bool HDR::prepare()
 {
 	if (!ApiVulkanSample::prepare(platform))
 	{
@@ -923,4 +923,20 @@ bool HDR::resize(const uint32_t width, const uint32_t height)
 std::unique_ptr<vkb::Application> create_hdr()
 {
 	return std::make_unique<HDR>();
+}
+
+
+#include "platform/unix/unix_platform.h"
+int main(int argc, char *argv[])
+{
+	vkb::UnixPlatform platform{vkb::UnixType::Mac, argc, argv};
+	auto code = platform.initialize({});
+	if (code == vkb::ExitCode::Success) {
+		apps::AppInfo info("My-app", create_hdr);
+		platform.request_application(&info);
+		code = platform.main_loop();
+	}
+
+	platform.terminate(code);
+	return EXIT_SUCCESS;
 }

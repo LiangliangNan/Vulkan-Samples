@@ -36,7 +36,6 @@
 #include "core/buffer.h"
 #include "core/swapchain.h"
 #include "gui.h"
-#include "platform/platform.h"
 #include "rendering/render_context.h"
 #include "scene_graph/components/image.h"
 #include "scene_graph/components/sampler.h"
@@ -85,7 +84,7 @@ class ApiVulkanSample : public vkb::VulkanSample
 
 	virtual ~ApiVulkanSample();
 
-	virtual bool prepare(vkb::Platform &platform) override;
+	virtual bool prepare() override;
 
 	virtual void input_event(const vkb::InputEvent &input_event) override;
 
@@ -106,7 +105,7 @@ class ApiVulkanSample : public vkb::VulkanSample
 	/// Stores the swapchain image buffers
 	std::vector<SwapchainBuffer> swapchain_buffers;
 
-	virtual void create_render_context(vkb::Platform &platform) override;
+	virtual void create_render_context() override;
 	virtual void prepare_render_context() override;
 
 	// Handle to the device graphics queue that command buffers are submitted to

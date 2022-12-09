@@ -31,7 +31,6 @@ VKBP_ENABLE_WARNINGS()
 #include "common/utils.h"
 #include "common/vk_common.h"
 #include "gltf_loader.h"
-#include "platform/platform.h"
 #include "platform/window.h"
 #include "rendering/render_context.h"
 #include "scene_graph/components/camera.h"
@@ -78,16 +77,16 @@ RenderPipeline &VulkanSample::get_render_pipeline()
 	return *render_pipeline;
 }
 
-bool VulkanSample::prepare(Platform &platform)
+bool VulkanSample::prepare()
 {
-	if (!Application::prepare(platform))
+	if (!Application::prepare())
 	{
 		return false;
 	}
 
 	LOGI("Initializing Vulkan sample");
 
-	bool headless = platform.get_window().get_window_mode() == Window::Mode::Headless;
+	bool headless = get_window().get_window_mode() == Window::Mode::Headless;
 
 	VkResult result = volkInitialize();
 	if (result)
@@ -98,7 +97,11 @@ bool VulkanSample::prepare(Platform &platform)
 	std::unique_ptr<DebugUtils> debug_utils{};
 
 	// Creating the vulkan instance
-	add_instance_extension(platform.get_surface_extension());
+
+	// firstly, added the extensions already enabled by the window
+	const auto& extensions = get_window().get_surface_extension();
+	for (auto ext : extensions)
+		add_instance_extension(ext);
 
 #ifdef VKB_VULKAN_DEBUG
 	{
@@ -122,15 +125,13 @@ bool VulkanSample::prepare(Platform &platform)
 	}
 #endif
 
-	create_instance();
-
 	if (!instance)
 	{
 		instance = std::make_unique<Instance>(get_name(), get_instance_extensions(), get_validation_layers(), headless, api_version);
 	}
 
 	// Getting a valid vulkan surface from the platform
-	surface = platform.get_window().create_surface(*instance);
+	surface = get_window().create_surface(*instance);
 	if (!surface)
 		throw std::runtime_error("Failed to create window surface.");
 
@@ -188,14 +189,12 @@ bool VulkanSample::prepare(Platform &platform)
 		debug_utils = std::make_unique<DummyDebugUtils>();
 	}
 
-	create_device();        // create_custom_device? better way than override?
-
 	if (!device)
 	{
 		device = std::make_unique<vkb::Device>(gpu, surface, std::move(debug_utils), get_device_extensions());
 	}
 
-	create_render_context(platform);
+	create_render_context();
 	prepare_render_context();
 
 	stats = std::make_unique<vkb::Stats>(*render_context);
@@ -205,22 +204,51 @@ bool VulkanSample::prepare(Platform &platform)
 
 	return true;
 }
+//
+//void VulkanSample::create_device()
+//{
+//}
+//
+//void VulkanSample::create_instance()
+//{
+//}
 
-void VulkanSample::create_device()
-{
-}
-
-void VulkanSample::create_instance()
-{
-}
-
-void VulkanSample::create_render_context(Platform &platform)
-{
+void VulkanSample::create_render_context() {
+	// We always want an sRGB surface to match the display.
+	// If we used a UNORM surface, we'd have to do the conversion to sRGB ourselves at the end of our fragment shaders.
 	auto surface_priority_list = std::vector<VkSurfaceFormatKHR>{{VK_FORMAT_R8G8B8A8_SRGB, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR},
 	                                                             {VK_FORMAT_B8G8R8A8_SRGB, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR}};
 
-	render_context = platform.create_render_context(*device, surface, surface_priority_list);
+	create_render_context(surface_priority_list);
 }
+
+
+void VulkanSample::create_render_context(const std::vector<VkSurfaceFormatKHR>& surface_priority_list) {
+
+	render_context = std::make_unique<RenderContext>(*device, surface, *window);
+
+	render_context->set_surface_format_priority(surface_priority_list);
+
+	render_context->request_image_format(surface_priority_list[0].format);
+
+	render_context->set_present_mode_priority({
+	    VK_PRESENT_MODE_MAILBOX_KHR,
+	    VK_PRESENT_MODE_FIFO_KHR,
+	    VK_PRESENT_MODE_IMMEDIATE_KHR,
+	});
+
+	switch (get_window().get_properties().vsync)
+	{
+		case Window::Vsync::ON:
+			render_context->request_present_mode(VK_PRESENT_MODE_FIFO_KHR);
+			break;
+		case Window::Vsync::OFF:
+		default:
+			render_context->request_present_mode(VK_PRESENT_MODE_MAILBOX_KHR);
+			break;
+	}
+}
+
 
 void VulkanSample::prepare_render_context()
 {
@@ -284,7 +312,8 @@ void VulkanSample::update_gui(float delta_time)
 
 		gui->new_frame();
 
-		gui->show_top_window(get_name(), stats.get(), &get_debug_info());
+//		gui->show_top_window(get_name(), stats.get(), &get_debug_info());
+		gui->show_top_window(get_name(), stats.get(), nullptr);
 
 		// Samples can override this
 		draw_gui();
@@ -314,7 +343,7 @@ void VulkanSample::update(float delta_time)
 
 	render_context->submit(command_buffer);
 
-	platform->on_post_draw(get_render_context());
+//	platform->on_post_draw(get_render_context());
 }
 
 void VulkanSample::draw(CommandBuffer &command_buffer, RenderTarget &render_target)
@@ -483,34 +512,34 @@ void VulkanSample::draw_gui()
 
 void VulkanSample::update_debug_window()
 {
-	auto        driver_version     = device->get_driver_version();
-	std::string driver_version_str = fmt::format("major: {} minor: {} patch: {}", driver_version.major, driver_version.minor, driver_version.patch);
-	get_debug_info().insert<field::Static, std::string>("driver_version", driver_version_str);
-
-	get_debug_info().insert<field::Static, std::string>("resolution",
-	                                                    to_string(render_context->get_swapchain().get_extent()));
-
-	get_debug_info().insert<field::Static, std::string>("surface_format",
-	                                                    to_string(render_context->get_swapchain().get_format()) + " (" +
-	                                                        to_string(get_bits_per_pixel(render_context->get_swapchain().get_format())) + "bpp)");
-
-	if (scene != nullptr)
-	{
-		get_debug_info().insert<field::Static, uint32_t>("mesh_count",
-		                                                 to_u32(scene->get_components<sg::SubMesh>().size()));
-
-		get_debug_info().insert<field::Static, uint32_t>("texture_count",
-		                                                 to_u32(scene->get_components<sg::Texture>().size()));
-
-		if (auto camera = scene->get_components<vkb::sg::Camera>().at(0))
-		{
-			if (auto camera_node = camera->get_node())
-			{
-				const glm::vec3 &pos = camera_node->get_transform().get_translation();
-				get_debug_info().insert<field::Vector, float>("camera_pos", pos.x, pos.y, pos.z);
-			}
-		}
-	}
+//	auto        driver_version     = device->get_driver_version();
+//	std::string driver_version_str = fmt::format("major: {} minor: {} patch: {}", driver_version.major, driver_version.minor, driver_version.patch);
+//	get_debug_info().insert<field::Static, std::string>("driver_version", driver_version_str);
+//
+//	get_debug_info().insert<field::Static, std::string>("resolution",
+//	                                                    to_string(render_context->get_swapchain().get_extent()));
+//
+//	get_debug_info().insert<field::Static, std::string>("surface_format",
+//	                                                    to_string(render_context->get_swapchain().get_format()) + " (" +
+//	                                                        to_string(get_bits_per_pixel(render_context->get_swapchain().get_format())) + "bpp)");
+//
+//	if (scene != nullptr)
+//	{
+//		get_debug_info().insert<field::Static, uint32_t>("mesh_count",
+//		                                                 to_u32(scene->get_components<sg::SubMesh>().size()));
+//
+//		get_debug_info().insert<field::Static, uint32_t>("texture_count",
+//		                                                 to_u32(scene->get_components<sg::Texture>().size()));
+//
+//		if (auto camera = scene->get_components<vkb::sg::Camera>().at(0))
+//		{
+//			if (auto camera_node = camera->get_node())
+//			{
+//				const glm::vec3 &pos = camera_node->get_transform().get_translation();
+//				get_debug_info().insert<field::Vector, float>("camera_pos", pos.x, pos.y, pos.z);
+//			}
+//		}
+//	}
 }
 
 void VulkanSample::set_viewport_and_scissor(vkb::CommandBuffer &command_buffer, const VkExtent2D &extent)

@@ -102,7 +102,7 @@ void RenderPassesSample::draw_gui()
 	    /* lines = */ vkb::to_u32(lines));
 }
 
-bool RenderPassesSample::prepare(vkb::Platform &platform)
+bool RenderPassesSample::prepare()
 {
 	if (!VulkanSample::prepare(platform))
 	{
@@ -127,7 +127,7 @@ bool RenderPassesSample::prepare(vkb::Platform &platform)
 
 	set_render_pipeline(std::move(render_pipeline));
 
-	gui = std::make_unique<vkb::Gui>(*this, platform.get_window(), stats.get());
+	gui = std::make_unique<vkb::Gui>(*this, get_window(), stats.get());
 
 	return true;
 }
@@ -179,4 +179,20 @@ void RenderPassesSample::draw_renderpass(vkb::CommandBuffer &command_buffer, vkb
 std::unique_ptr<vkb::VulkanSample> create_render_passes()
 {
 	return std::make_unique<RenderPassesSample>();
+}
+
+
+#include "platform/unix/unix_platform.h"
+int main(int argc, char *argv[])
+{
+	vkb::UnixPlatform platform{vkb::UnixType::Mac, argc, argv};
+	auto code = platform.initialize({});
+	if (code == vkb::ExitCode::Success) {
+		apps::AppInfo info("My-app", create_render_passes);
+		platform.request_application(&info);
+		code = platform.main_loop();
+	}
+
+	platform.terminate(code);
+	return EXIT_SUCCESS;
 }

@@ -312,25 +312,23 @@ set(ANDROID_FILES
     platform/android/android_platform.cpp
     platform/android/android_window.cpp)
 
-set(WINDOWS_FILES
-    # Header Files
-    platform/windows/windows_platform.h
-    # Source Files
-    platform/windows/windows_platform.cpp)
+#set(WINDOWS_FILES
+#    # Header Files
+#    platform/windows/windows_platform.h
+#    # Source Files
+#    platform/windows/windows_platform.cpp)
 
-set(UNIX_FILES
-    # Header Files
-    platform/unix/unix_platform.h
-    # Source Files
-    platform/unix/unix_platform.cpp)
+#set(UNIX_FILES
+#    # Header Files
+#    platform/unix/unix_platform.h
+#    # Source Files
+#    platform/unix/unix_platform.cpp)
 
 set(LINUX_D2D_FILES
     # Header Files
-    platform/unix/unix_d2d_platform.h
-    platform/unix/direct_window.h
+        platform/unix/direct_window.h
     # Source Files
-    platform/unix/unix_d2d_platform.cpp
-    platform/unix/direct_window.cpp) 
+        platform/unix/direct_window.cpp)
 
 source_group("\\" FILES ${FRAMEWORK_FILES})
 source_group("common\\" FILES ${COMMON_FILES})
@@ -467,8 +465,9 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     spdlog
     ctpl
     CLI11::CLI11
-    apps
-    plugins)
+#    apps
+#    plugins
+        )
 
 if(${NEED_LINK_ATOMIC})
     target_link_libraries(${PROJECT_NAME} PUBLIC atomic)

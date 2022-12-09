@@ -17,40 +17,42 @@
 
 #pragma once
 
-#include "common/vk_common.h"
-#include "platform/window.h"
+//#include "vk_common.h"
+#include "window.h"
 
 struct GLFWwindow;
 
-namespace vkb
-{
-class Platform;
+namespace vkb {
+    class Instance;
+
+    class Application;
 
 /**
  * @brief An implementation of GLFW, inheriting the behaviour of the Window interface
  */
-class GlfwWindow : public Window
-{
-  public:
-	GlfwWindow(Platform *platform, const Window::Properties &properties);
+    class GlfwWindow : public Window {
+    public:
+        GlfwWindow(Application *app, const Window::Properties &properties);
 
-	virtual ~GlfwWindow();
+        virtual ~GlfwWindow();
 
-	VkSurfaceKHR create_surface(Instance &instance) override;
+        VkSurfaceKHR create_surface(Instance &instance) override;
 
-	VkSurfaceKHR create_surface(VkInstance instance, VkPhysicalDevice physical_device) override;
+        VkSurfaceKHR create_surface(VkInstance instance, VkPhysicalDevice physical_device) override;
 
-	bool should_close() override;
+	    std::vector<const char *> get_surface_extension() const override;
 
-	void process_events() override;
+        bool should_close() override;
 
-	void close() override;
+        void process_events() override;
 
-	float get_dpi_factor() const override;
+        void close() override;
 
-	float get_content_scale_factor() const override;
+        float get_dpi_factor() const override;
 
-  private:
-	GLFWwindow *handle = nullptr;
-};
+        float get_content_scale_factor() const override;
+
+    private:
+        GLFWwindow *handle = nullptr;
+    };
 }        // namespace vkb

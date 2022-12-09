@@ -112,6 +112,20 @@ void create_path(const std::string &root, const std::string &path)
 	}
 }
 
+void create_directory(const std::string &path)
+{
+	if (!is_directory(path))
+	{
+		//Todo: move this to platform
+#ifdef __APPLE__
+		mkdir(path.c_str(), 0777);
+#else
+		throw std::runtime_error("Don't know how to create a directory on this platform");
+#endif
+	}
+}
+
+
 std::string read_text_file(const std::string &filename)
 {
 	std::vector<std::string> data;

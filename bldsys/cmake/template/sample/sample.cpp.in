@@ -29,7 +29,7 @@
 {
 }
 
-bool @SAMPLE_NAME@::prepare(vkb::Platform &platform)
+bool @SAMPLE_NAME@::prepare()
 {
 	if (!VulkanSample::prepare(platform))
 	{
@@ -53,7 +53,7 @@ bool @SAMPLE_NAME@::prepare(vkb::Platform &platform)
 
 	// Add a GUI with the stats you want to monitor
 	stats->request_stats({/*stats you require*/});
-	gui = std::make_unique<vkb::Gui>(*this, platform.get_window(), stats.get());
+	gui = std::make_unique<vkb::Gui>(*this, get_window(), stats.get());
 
 	return true;
 }

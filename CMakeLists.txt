@@ -60,5 +60,5 @@ if(VKB_BUILD_SAMPLES)
     add_subdirectory(samples)
 endif()
 
-# Add vulkan app (runs all samples)
-add_subdirectory(app)
+## Add vulkan app (runs all samples)
+#add_subdirectory(app)

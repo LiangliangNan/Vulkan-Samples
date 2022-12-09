@@ -109,19 +109,19 @@ class VulkanSample : public Application
 	/**
 	 * @brief Additional sample initialization
 	 */
-	bool prepare(Platform &platform) override;
+	bool prepare() override;
 
-	/**
-	 * @brief Create the Vulkan device used by this sample
-	 * @note Can be overridden to implement custom device creation 
-	 */
-	virtual void create_device();
-
-	/**
-	 * @brief Create the Vulkan instance used by this sample
-	 * @note Can be overridden to implement custom instance creation 
-	 */
-	virtual void create_instance();
+//	/**
+//	 * @brief Create the Vulkan device used by this sample
+//	 * @note Can be overridden to implement custom device creation
+//	 */
+//	virtual void create_device();
+//
+//	/**
+//	 * @brief Create the Vulkan instance used by this sample
+//	 * @note Can be overridden to implement custom instance creation
+//	 */
+//	virtual void create_instance();
 
 	/**
 	 * @brief Main loop sample events
@@ -273,7 +273,10 @@ class VulkanSample : public Application
 	/** 
 	 * @brief Override this to customise the creation of the render_context
 	 */
-	virtual void create_render_context(Platform &platform);
+	virtual void create_render_context();
+
+	// Todo: make this one private
+	void create_render_context(const std::vector<VkSurfaceFormatKHR>& surface_priority_list);
 
 	/** 
 	 * @brief Override this to customise the creation of the swapchain and render_context

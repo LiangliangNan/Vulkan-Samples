@@ -1090,14 +1090,14 @@ HelloTriangle::~HelloTriangle()
 	teardown(context);
 }
 
-bool HelloTriangle::prepare(vkb::Platform &platform)
+bool HelloTriangle::prepare()
 {
 	init_instance(context, {VK_KHR_SURFACE_EXTENSION_NAME}, {});
 
 	vk_instance = std::make_unique<vkb::Instance>(context.instance);
 
-	context.surface                     = platform.get_window().create_surface(*vk_instance);
-	auto &extent                        = platform.get_window().get_extent();
+	context.surface                     = get_window().create_surface(*vk_instance);
+	auto &extent                        = get_window().get_extent();
 	context.swapchain_dimensions.width  = extent.width;
 	context.swapchain_dimensions.height = extent.height;
 

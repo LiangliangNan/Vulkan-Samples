@@ -39,7 +39,7 @@ MultithreadingRenderPasses::MultithreadingRenderPasses()
 	config.insert<vkb::IntSetting>(2, multithreading_mode, 2);
 }
 
-bool MultithreadingRenderPasses::prepare(vkb::Platform &platform)
+bool MultithreadingRenderPasses::prepare()
 {
 	if (!VulkanSample::prepare(platform))
 	{
@@ -75,7 +75,7 @@ bool MultithreadingRenderPasses::prepare(vkb::Platform &platform)
 
 	// Add a GUI with the stats you want to monitor
 	stats->request_stats({vkb::StatIndex::frame_times, vkb::StatIndex::cpu_cycles});
-	gui = std::make_unique<vkb::Gui>(*this, platform.get_window(), stats.get());
+	gui = std::make_unique<vkb::Gui>(*this, get_window(), stats.get());
 
 	return true;
 }
@@ -529,7 +529,11 @@ void MultithreadingRenderPasses::ShadowSubpass::prepare_push_constants(vkb::Comm
 	return;
 }
 
-std::unique_ptr<vkb::VulkanSample> create_multithreading_render_passes()
+int main(int argc, char *argv[])
 {
-	return std::make_unique<MultithreadingRenderPasses>();
+	MultithreadingRenderPasses app;
+	app.prepare();
+	app.run();
+	app.finish();
+	return EXIT_SUCCESS;
 }

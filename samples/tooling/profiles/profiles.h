@@ -76,7 +76,7 @@ class Profiles : public ApiVulkanSample
 	void         prepare_pipelines();
 	void         prepare_uniform_buffers();
 	void         update_uniform_buffers();
-	bool         prepare(vkb::Platform &platform) override;
+	bool         bool prepare() override;
 	void         render(float delta_time) override;
 	void         view_changed() override;
 	void         create_device() override;

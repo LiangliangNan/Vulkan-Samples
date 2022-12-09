@@ -67,7 +67,7 @@ class MSAASample : public vkb::VulkanSample
 
 	virtual ~MSAASample() = default;
 
-	virtual bool prepare(vkb::Platform &platform) override;
+	virtual bool prepare() override;
 
 	virtual void update(float delta_time) override;
 
@@ -267,5 +267,3 @@ class MSAASample : public vkb::VulkanSample
 
 	VkResolveModeFlagBits last_gui_depth_resolve_mode{VK_RESOLVE_MODE_NONE};
 };
-
-std::unique_ptr<vkb::VulkanSample> create_msaa();

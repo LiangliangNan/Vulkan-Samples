@@ -38,7 +38,7 @@ bool WindowOptions::is_active(const vkb::CommandParser &parser)
 
 void WindowOptions::init(const vkb::CommandParser &parser)
 {
-	vkb::Window::OptionalProperties properties;
+	vkb::Window::Properties properties;
 
 	if (parser.contains(&width_flag))
 	{

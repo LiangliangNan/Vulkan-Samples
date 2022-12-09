@@ -17,59 +17,80 @@
 
 #include "application.h"
 
-#include "common/logging.h"
-#include "platform/platform.h"
-#include "platform/window.h"
+#include <iostream>
 
-namespace vkb
-{
-Application::Application() :
-    name{"Sample Name"}
-{
+//#include "common/logging.h"
+//#include "platform/platform.h"
+
+
+namespace vkb {
+
+std::string Application::external_storage_directory = "";
+
+std::string Application::temp_directory = "";
+
+    Application::Application() :
+            name{"Sample Name"} {
+	    auto win = Platform::create_window(this);
+	    window = std::move(win);
+    }
+
+    bool Application::prepare() {
+        return true;
+    }
+
+    void Application::main_loop() {
+	    while (!window->should_close())
+	    {
+		    try
+		    {
+
+			    auto delta_time = static_cast<float>(timer.tick<Timer::Seconds>());
+
+//			    if (focused)
+			    {
+//				    on_update(delta_time);
+
+//				    if (fixed_simulation_fps)
+//				    {
+//					    delta_time = simulation_frame_time;
+//				    }
+
+				    update(delta_time);
+			    }
+
+			    window->process_events();
+		    }
+		    catch (std::exception &e)
+		    {
+			    LOGE("Error Message: {}", e.what());
+			    LOGE("Failed when running application {}", get_name());
+//			    on_app_error(active_app->get_name());
+		    }
+	    }
+    }
+
+    void Application::finish() {
+    }
+
+    bool Application::resize(const uint32_t /*width*/, const uint32_t /*height*/) {
+        return true;
+    }
+
+    void Application::input_event(const InputEvent &input_event) {
+    }
+
+    void Application::update(float delta_time) {
+        fps = 1.0f / delta_time;
+        frame_time = delta_time * 1000.0f;
+    }
+
+    const std::string &Application::get_name() const {
+        return name;
+    }
+
+    void Application::set_name(const std::string &name_) {
+        name = name_;
+    }
+
 }
-
-bool Application::prepare(Platform &_platform)
-{
-	auto &_debug_info = get_debug_info();
-	_debug_info.insert<field::MinMax, float>("fps", fps);
-	_debug_info.insert<field::MinMax, float>("frame_time", frame_time);
-
-	this->platform = &_platform;
-
-	return true;
-}
-
-void Application::finish()
-{
-}
-
-bool Application::resize(const uint32_t /*width*/, const uint32_t /*height*/)
-{
-	return true;
-}
-
-void Application::input_event(const InputEvent &input_event)
-{
-}
-
-void Application::update(float delta_time)
-{
-	fps        = 1.0f / delta_time;
-	frame_time = delta_time * 1000.0f;
-}
-
-const std::string &Application::get_name() const
-{
-	return name;
-}
-
-void Application::set_name(const std::string &name_)
-{
-	name = name_;
-}
-
-DebugInfo &Application::get_debug_info()
-{
-	return debug_info;
-}
-}        // namespace vkb

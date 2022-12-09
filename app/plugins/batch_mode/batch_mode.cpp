@@ -75,7 +75,7 @@ void BatchMode::init(const vkb::CommandParser &parser)
 
 	sample_iter = sample_list.begin();
 
-	vkb::Window::OptionalProperties properties;
+	vkb::Window::Properties properties;
 	properties.resizable = false;
 	platform->set_window_properties(properties);
 	platform->disable_input_processing();

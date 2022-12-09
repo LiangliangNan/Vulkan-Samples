@@ -91,9 +91,9 @@ MSAASample::MSAASample()
 	config.insert<vkb::BoolSetting>(1, gui_run_postprocessing, true);
 }
 
-bool MSAASample::prepare(vkb::Platform &platform)
+bool MSAASample::prepare()
 {
-	if (!VulkanSample::prepare(platform))
+	if (!VulkanSample::prepare())
 	{
 		return false;
 	}
@@ -128,7 +128,7 @@ bool MSAASample::prepare(vkb::Platform &platform)
 	                      vkb::StatIndex::gpu_ext_read_bytes,
 	                      vkb::StatIndex::gpu_ext_write_bytes});
 
-	gui = std::make_unique<vkb::Gui>(*this, platform.get_window(), stats.get());
+	gui = std::make_unique<vkb::Gui>(*this, get_window(), stats.get());
 
 	return true;
 }
@@ -816,26 +816,19 @@ void MSAASample::draw_gui()
 	    lines);
 }
 
-std::unique_ptr<vkb::VulkanSample> create_msaa()
-{
-	return std::make_unique<MSAASample>();
-}
 
-
-
-
-
-#include "platform/unix/unix_platform.h"
 int main(int argc, char *argv[])
 {
-	vkb::UnixPlatform platform{vkb::UnixType::Mac, argc, argv};
-	auto code = platform.initialize({});
-	if (code == vkb::ExitCode::Success) {
-		apps::AppInfo info("My-app", create_msaa);
-		platform.request_application(&info);
-		code = platform.main_loop();
-	}
+//	Window::Properties properties{};
+//	properties.title = "My first vulkan application";
+//	properties.extent.width = 800;
+//	properties.extent.height = 600;
+//	properties.mode = Window::Mode::Default;
+//	properties.vsync = Window::Vsync::Default;
 
-	platform.terminate(code);
+	MSAASample app;
+	app.prepare();
+	app.main_loop();
+	app.finish();
 	return EXIT_SUCCESS;
 }

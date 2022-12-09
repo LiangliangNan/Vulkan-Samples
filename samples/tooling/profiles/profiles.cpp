@@ -662,7 +662,7 @@ void Profiles::update_uniform_buffers()
 	uniform_buffer_vs->convert_and_update(ubo_vs);
 }
 
-bool Profiles::prepare(vkb::Platform &platform)
+bool Profiles::prepare()
 {
 	if (!ApiVulkanSample::prepare(platform))
 	{

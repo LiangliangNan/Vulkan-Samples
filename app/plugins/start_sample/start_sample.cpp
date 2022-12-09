@@ -41,7 +41,7 @@ void StartSample::init(const vkb::CommandParser &parser)
 		auto *sample = apps::get_sample(parser.as<std::string>(&sample_cmd));
 		if (sample != nullptr)
 		{
-			vkb::Window::OptionalProperties properties;
+			vkb::Window::Properties properties;
 			std::string                     title = "Vulkan Samples: " + sample->name;
 			properties.title                      = title;
 			platform->set_window_properties(properties);

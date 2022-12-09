@@ -29,10 +29,11 @@
 #include <spdlog/spdlog.h>
 
 #include "common/logging.h"
-#include "force_close/force_close.h"
+//#include "force_close/force_close.h"
 #include "platform/filesystem.h"
 #include "platform/parsers/CLI11.h"
 #include "platform/plugins/plugin.h"
+#include "glfw_window.h"
 
 namespace vkb
 {
@@ -103,7 +104,7 @@ ExitCode Platform::initialize(const std::vector<Plugin *> &plugins = {})
 		return ExitCode::Close;
 	}
 
-	create_window(window_properties);
+//	create_window(window_properties);
 
 	if (!window)
 	{
@@ -137,7 +138,7 @@ ExitCode Platform::main_loop()
 
 				// Compensate for load times of the app by rendering the first frame pre-emptively
 				timer.tick<Timer::Seconds>();
-				active_app->update(0.01667f);
+//				active_app->update(0.01667f);
 			}
 
 			update();
@@ -147,9 +148,9 @@ ExitCode Platform::main_loop()
 		catch (std::exception &e)
 		{
 			LOGE("Error Message: {}", e.what());
-			LOGE("Failed when running application {}", active_app->get_name());
+//			LOGE("Failed when running application {}", active_app->get_name());
 
-			on_app_error(active_app->get_name());
+//			on_app_error(active_app->get_name());
 
 			if (app_requested())
 			{
@@ -178,7 +179,7 @@ void Platform::update()
 			delta_time = simulation_frame_time;
 		}
 
-		active_app->update(delta_time);
+//		active_app->update(delta_time);
 	}
 }
 
@@ -223,16 +224,16 @@ void Platform::terminate(ExitCode code)
 		}
 	}
 
-	if (active_app)
-	{
-		std::string id = active_app->get_name();
-
-		on_app_close(id);
-
-		active_app->finish();
-	}
-
-	active_app.reset();
+//	if (active_app)
+//	{
+//		std::string id = active_app->get_name();
+//
+//		on_app_close(id);
+//
+//		active_app->finish();
+//	}
+//
+//	active_app.reset();
 	window.reset();
 
 	spdlog::drop_all();
@@ -240,7 +241,7 @@ void Platform::terminate(ExitCode code)
 	on_platform_close();
 
 	// Halt on all unsuccessful exit codes unless ForceClose is in use
-	if (code != ExitCode::Success && !using_plugin<::plugins::ForceClose>())
+//	if (code != ExitCode::Success && !using_plugin<::plugins::ForceClose>())
 	{
 #ifndef ANDROID
 		std::cout << "Press any key to continue";
@@ -276,14 +277,15 @@ void Platform::set_focus(bool _focused)
 	focused = _focused;
 }
 
-void Platform::set_window_properties(const Window::OptionalProperties &properties)
+void Platform::set_window_properties(const Window::Properties &properties)
 {
-	window_properties.title         = properties.title.has_value() ? properties.title.value() : window_properties.title;
-	window_properties.mode          = properties.mode.has_value() ? properties.mode.value() : window_properties.mode;
-	window_properties.resizable     = properties.resizable.has_value() ? properties.resizable.value() : window_properties.resizable;
-	window_properties.vsync         = properties.vsync.has_value() ? properties.vsync.value() : window_properties.vsync;
-	window_properties.extent.width  = properties.extent.width.has_value() ? properties.extent.width.value() : window_properties.extent.width;
-	window_properties.extent.height = properties.extent.height.has_value() ? properties.extent.height.value() : window_properties.extent.height;
+	window_properties = properties;
+//	window_properties.title         = properties.title.has_value() ? properties.title.value() : window_properties.title;
+//	window_properties.mode          = properties.mode.has_value() ? properties.mode.value() : window_properties.mode;
+//	window_properties.resizable     = properties.resizable.has_value() ? properties.resizable.value() : window_properties.resizable;
+//	window_properties.vsync         = properties.vsync.has_value() ? properties.vsync.value() : window_properties.vsync;
+//	window_properties.extent.width  = properties.extent.width.has_value() ? properties.extent.width.value() : window_properties.extent.width;
+//	window_properties.extent.height = properties.extent.height.has_value() ? properties.extent.height.value() : window_properties.extent.height;
 }
 
 const std::string &Platform::get_external_storage_directory()
@@ -296,21 +298,31 @@ const std::string &Platform::get_temp_directory()
 	return temp_directory;
 }
 
-Application &Platform::get_app()
-{
-	assert(active_app && "Application is not valid");
-	return *active_app;
-}
+//Application &Platform::get_app()
+//{
+//	assert(active_app && "Application is not valid");
+//	return *active_app;
+//}
+//
+//Application &Platform::get_app() const
+//{
+//	assert(active_app && "Application is not valid");
+//	return *active_app;
+//}
 
-Application &Platform::get_app() const
-{
-	assert(active_app && "Application is not valid");
-	return *active_app;
-}
 
-Window &Platform::get_window()
-{
-	return *window;
+std::unique_ptr<Window> Platform::create_window(Application* app, const Window::Properties &properties) {
+#if __APPLE__
+	// Android window uses native window size
+	// Required so that the vulkan sample can create a VkSurface
+	return std::make_unique<GlfwWindow>(app, properties);
+#else
+	std::cerr << "don't how to create a window on this platform:"
+	          << "\n\tLine: " << __LINE__
+	          << "\n\tFunction: " << __FUNCTION__
+	          << "\n\tFile: " << __FILE_NAME__
+	          << std::endl;
+#endif
 }
 
 std::vector<std::string> &Platform::get_arguments()
@@ -342,68 +354,68 @@ std::vector<spdlog::sink_ptr> Platform::get_platform_sinks()
 
 bool Platform::app_requested()
 {
-	return requested_app != nullptr;
+	return false; //requested_app != nullptr;
 }
 
-void Platform::request_application(const apps::AppInfo *app)
-{
-	requested_app = app;
-}
-
+//void Platform::request_application(const apps::AppInfo *app)
+//{
+//	requested_app = app;
+//}
+//
 bool Platform::start_app()
 {
-	auto *requested_app_info = requested_app;
-	// Reset early incase error in preperation stage
-	requested_app = nullptr;
-
-	if (active_app)
-	{
-		auto execution_time = timer.stop();
-		LOGI("Closing App (Runtime: {:.1f})", execution_time);
-
-		auto app_id = active_app->get_name();
-
-		active_app->finish();
-	}
-
-	active_app = requested_app_info->create();
-
-	active_app->set_name(requested_app_info->id);
-
-	if (!active_app)
-	{
-		LOGE("Failed to create a valid vulkan app.");
-		return false;
-	}
-
-	if (!active_app->prepare(*this))
-	{
-		LOGE("Failed to prepare vulkan app.");
-		return false;
-	}
-
-	on_app_start(requested_app_info->id);
-
+//	auto *requested_app_info = requested_app;
+//	// Reset early incase error in preperation stage
+//	requested_app = nullptr;
+//
+//	if (active_app)
+//	{
+//		auto execution_time = timer.stop();
+//		LOGI("Closing App (Runtime: {:.1f})", execution_time);
+//
+//		auto app_id = active_app->get_name();
+//
+//		active_app->finish();
+//	}
+//
+//	active_app = requested_app_info->create();
+//
+//	active_app->set_name(requested_app_info->id);
+//
+//	if (!active_app)
+//	{
+//		LOGE("Failed to create a valid vulkan app.");
+//		return false;
+//	}
+//
+//	if (!active_app->prepare())
+//	{
+//		LOGE("Failed to prepare vulkan app.");
+//		return false;
+//	}
+//
+//	on_app_start(requested_app_info->id);
+//
 	return true;
 }
 
 void Platform::input_event(const InputEvent &input_event)
 {
-	if (process_input_events && active_app)
-	{
-		active_app->input_event(input_event);
-	}
-
-	if (input_event.get_source() == EventSource::Keyboard)
-	{
-		const auto &key_event = static_cast<const KeyInputEvent &>(input_event);
-
-		if (key_event.get_code() == KeyCode::Back ||
-		    key_event.get_code() == KeyCode::Escape)
-		{
-			close();
-		}
-	}
+//	if (process_input_events && active_app)
+//	{
+//		active_app->input_event(input_event);
+//	}
+//
+//	if (input_event.get_source() == EventSource::Keyboard)
+//	{
+//		const auto &key_event = static_cast<const KeyInputEvent &>(input_event);
+//
+//		if (key_event.get_code() == KeyCode::Back ||
+//		    key_event.get_code() == KeyCode::Escape)
+//		{
+//			close();
+//		}
+//	}
 }
 
 void Platform::resize(uint32_t width, uint32_t height)
@@ -413,10 +425,10 @@ void Platform::resize(uint32_t width, uint32_t height)
 	{
 		auto actual_extent = window->resize(extent);
 
-		if (active_app)
-		{
-			active_app->resize(actual_extent.width, actual_extent.height);
-		}
+//		if (active_app)
+//		{
+//			active_app->resize(actual_extent.width, actual_extent.height);
+//		}
 	}
 }
 

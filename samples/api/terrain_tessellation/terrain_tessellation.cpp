@@ -726,7 +726,7 @@ void TerrainTessellation::draw()
 	ApiVulkanSample::submit_frame();
 }
 
-bool TerrainTessellation::prepare(vkb::Platform &platform)
+bool TerrainTessellation::prepare()
 {
 	if (!ApiVulkanSample::prepare(platform))
 	{
@@ -801,4 +801,20 @@ void TerrainTessellation::on_update_ui_overlay(vkb::Drawer &drawer)
 std::unique_ptr<vkb::Application> create_terrain_tessellation()
 {
 	return std::make_unique<TerrainTessellation>();
+}
+
+
+#include "platform/unix/unix_platform.h"
+int main(int argc, char *argv[])
+{
+	vkb::UnixPlatform platform{vkb::UnixType::Mac, argc, argv};
+	auto code = platform.initialize({});
+	if (code == vkb::ExitCode::Success) {
+		apps::AppInfo info("My-app", create_terrain_tessellation);
+		platform.request_application(&info);
+		code = platform.main_loop();
+	}
+
+	platform.terminate(code);
+	return EXIT_SUCCESS;
 }

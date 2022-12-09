@@ -20,73 +20,86 @@
 #include <string>
 
 #include "debug_info.h"
+#include "platform/platform.h"
 #include "platform/configuration.h"
-#include "platform/input_events.h"
+#include "input_events.h"
 #include "timer.h"
+#include "window.h"
 
-namespace vkb
-{
-class Window;
-class Platform;
 
-class Application
-{
-  public:
-	Application();
+namespace vkb {
 
-	virtual ~Application() = default;
+    class Window;
 
-	/**
-	 * @brief Prepares the application for execution
-	 * @param platform The platform the application is being run on
-	 */
-	virtual bool prepare(Platform &platform);
+    class Application {
+    public:
+        Application();
 
-	/**
-	 * @brief Updates the application
-	 * @param delta_time The time since the last update
-	 */
-	virtual void update(float delta_time);
+        virtual ~Application() = default;
 
-	/**
-	 * @brief Handles cleaning up the application
-	 */
-	virtual void finish();
+        /**
+         * @brief Prepares the application for execution
+         * @param platform The platform the application is being run on
+         */
+        virtual bool prepare();
 
-	/**
-	 * @brief Handles resizing of the window
-	 * @param width New width of the window
-	 * @param height New height of the window
-	 */
-	virtual bool resize(const uint32_t width, const uint32_t height);
+	    void main_loop();
 
-	/**
-	 * @brief Handles input events of the window
-	 * @param input_event The input event object
-	 */
-	virtual void input_event(const InputEvent &input_event);
+        /**
+         * @brief Handles cleaning up the application
+         */
+        virtual void finish();
 
-	const std::string &get_name() const;
+	  public:
+	    /**
+         * @brief Updates the application
+         * @param delta_time The time since the last update
+	     */
+	    virtual void update(float delta_time);
 
-	void set_name(const std::string &name);
+        /**
+         * @brief Handles resizing of the window
+         * @param width New width of the window
+         * @param height New height of the window
+         */
+        virtual bool resize(const uint32_t width, const uint32_t height);
 
-	DebugInfo &get_debug_info();
+        /**
+         * @brief Handles input events of the window
+         * @param input_event The input event object
+         */
+        virtual void input_event(const InputEvent &input_event);
 
-  protected:
-	float fps{0.0f};
+        const std::string &get_name() const;
 
-	float frame_time{0.0f};        // In ms
+        void set_name(const std::string &name);
 
-	uint32_t frame_count{0};
+//	DebugInfo &get_debug_info();
 
-	uint32_t last_frame_count{0};
+    protected:
+        float fps{0.0f};
 
-	Platform *platform;
+        float frame_time{0.0f};        // In ms
 
-  private:
-	std::string name{};
+        uint32_t frame_count{0};
 
-	// The debug info of the app
-	DebugInfo debug_info{};
-};
+        uint32_t last_frame_count{0};
+
+//	Platform *platform;
+
+    private:
+        std::string name{};
+
+        // The debug info of the app
+//	DebugInfo debug_info{};
+	  protected:
+	    Timer timer;
+	    std::unique_ptr<Window> window{nullptr};
+
+	    Window &get_window() const { return *window; }
+
+	    static std::string external_storage_directory;
+
+	    static std::string temp_directory;
+    };
 }        // namespace vkb

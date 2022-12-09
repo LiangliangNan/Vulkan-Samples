@@ -21,16 +21,17 @@
 #include <string>
 #include <vector>
 
-#include "apps.h"
+//#include "apps.h"
 #include "common/optional.h"
 #include "common/utils.h"
 #include "common/vk_common.h"
-#include "platform/application.h"
 #include "platform/filesystem.h"
 #include "platform/parser.h"
 #include "platform/plugins/plugin.h"
 #include "platform/window.h"
+#include "platform/input_events.h"
 #include "rendering/render_context.h"
+#include "timer.h"
 
 #if defined(VK_USE_PLATFORM_XLIB_KHR)
 #	undef Success
@@ -38,6 +39,7 @@
 
 namespace vkb
 {
+
 enum class ExitCode
 {
 	Success = 0, /* App executed as expected */
@@ -45,6 +47,8 @@ enum class ExitCode
 	Close,       /* App has been requested to close at initialization */
 	FatalError   /* App encountered an unexpected error */
 };
+
+class Application;
 
 class Platform
 {
@@ -59,6 +63,13 @@ class Platform
 	 * @return An exit code representing the outcome of initialization
 	 */
 	virtual ExitCode initialize(const std::vector<Plugin *> &plugins);
+
+	/**
+		 * @brief Handles the creation of the window
+		 *
+		 * @param properties Preferred window configuration
+	 */
+	static std::unique_ptr<Window> create_window(Application* app, const Window::Properties &properties = Window::Properties());
 
 	/**
 	 * @brief Handles the main loop of the platform
@@ -108,9 +119,9 @@ class Platform
 
 	Window &get_window();
 
-	Application &get_app() const;
-
-	Application &get_app();
+//	Application &get_app() const;
+//
+//	Application &get_app();
 
 	std::vector<std::string> &get_arguments();
 
@@ -128,7 +139,7 @@ class Platform
 
 	void set_focus(bool focused);
 
-	void request_application(const apps::AppInfo *app);
+//	void request_application(const apps::AppInfo *app);
 
 	bool app_requested();
 
@@ -138,7 +149,7 @@ class Platform
 
 	void disable_input_processing();
 
-	void set_window_properties(const Window::OptionalProperties &properties);
+	void set_window_properties(const Window::Properties &properties);
 
 	void on_post_draw(RenderContext &context);
 
@@ -152,18 +163,9 @@ class Platform
 
 	std::unordered_map<Hook, std::vector<Plugin *>> hooks;
 
-	std::unique_ptr<Window> window{nullptr};
-
-	std::unique_ptr<Application> active_app{nullptr};
+//	std::unique_ptr<Application> active_app{nullptr};
 
 	virtual std::vector<spdlog::sink_ptr> get_platform_sinks();
-
-	/**
-	 * @brief Handles the creation of the window
-	 * 
-	 * @param properties Preferred window configuration
-	 */
-	virtual void create_window(const Window::Properties &properties) = 0;
 
 	void on_update(float delta_time);
 	void on_app_error(const std::string &app_id);
@@ -181,8 +183,8 @@ class Platform
   private:
 	Timer timer;
 
-	const apps::AppInfo *requested_app{nullptr};
-
+//	const apps::AppInfo *requested_app{nullptr};
+	std::unique_ptr<Window> window{nullptr};
 	std::vector<Plugin *> plugins;
 
 	/// Static so can be set via JNI code in android_platform.cpp

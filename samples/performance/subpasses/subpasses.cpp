@@ -102,7 +102,7 @@ void Subpasses::prepare_render_context()
 	get_render_context().prepare(1, [this](vkb::core::Image &&swapchain_image) { return create_render_target(std::move(swapchain_image)); });
 }
 
-bool Subpasses::prepare(vkb::Platform &platform)
+bool Subpasses::prepare()
 {
 	if (!VulkanSample::prepare(platform))
 	{
@@ -162,7 +162,7 @@ bool Subpasses::prepare(vkb::Platform &platform)
 	                      vkb::StatIndex::gpu_ext_write_bytes});
 
 	// Enable gui
-	gui = std::make_unique<vkb::Gui>(*this, platform.get_window(), stats.get());
+	gui = std::make_unique<vkb::Gui>(*this, get_window(), stats.get());
 
 	return true;
 }
@@ -443,4 +443,15 @@ void Subpasses::draw_renderpass(vkb::CommandBuffer &command_buffer, vkb::RenderT
 std::unique_ptr<vkb::VulkanSample> create_subpasses()
 {
 	return std::make_unique<Subpasses>();
+}
+
+
+#include "platform/unix/unix_platform.h"
+int main(int argc, char *argv[])
+{
+	Subpasses app;
+	app.prepare();
+	app.finish();
+	return 0;
+	return EXIT_SUCCESS;
 }
