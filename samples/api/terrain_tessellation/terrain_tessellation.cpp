@@ -802,6 +802,8 @@ void TerrainTessellation::on_update_ui_overlay(vkb::Drawer &drawer)
 int main(int argc, char *argv[])
 {
 	TerrainTessellation app;
+	app.set_name("TerrainTessellation");
+	app.resize({1200, 800});
 	app.prepare();
 	return app.run();
 }

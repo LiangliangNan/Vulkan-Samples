@@ -924,6 +924,8 @@ bool HDR::on_resize(const uint32_t width, const uint32_t height)
 int main(int argc, char *argv[])
 {
 	HDR app;
+	app.set_name("HDR");
+	app.resize({1200, 800});
 	app.prepare();
 	return app.run();
 }

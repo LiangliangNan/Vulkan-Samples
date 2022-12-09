@@ -541,6 +541,8 @@ bool Instancing::on_resize(const uint32_t width, const uint32_t height)
 int main(int argc, char *argv[])
 {
 	Instancing app;
+	app.set_name("Instancing");
+	app.resize({600, 400});
 	app.prepare();
 	return app.run();
 }

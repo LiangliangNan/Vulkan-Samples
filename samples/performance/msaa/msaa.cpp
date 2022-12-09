@@ -820,6 +820,8 @@ void MSAASample::draw_gui()
 int main(int argc, char *argv[])
 {
 	MSAASample app;
+	app.set_name("MSAASample");
+	app.resize({800, 600});
 	app.prepare();
 	return app.run();
 }

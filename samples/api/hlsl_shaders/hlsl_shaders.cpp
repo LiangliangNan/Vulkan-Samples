@@ -510,6 +510,8 @@ void HlslShaders::view_changed()
 int main(int argc, char *argv[])
 {
 	HlslShaders app;
+	app.set_name("HlslShaders");
+	app.resize({1200, 800});
 	app.prepare();
 	return app.run();
 }

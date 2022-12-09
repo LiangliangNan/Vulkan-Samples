@@ -181,6 +181,8 @@ void RenderPassesSample::draw_renderpass(vkb::CommandBuffer &command_buffer, vkb
 int main(int argc, char *argv[])
 {
 	RenderPassesSample app;
+	app.set_name("RenderPassesSample");
+	app.resize({800, 600});
 	app.prepare();
 	return app.run();
 }

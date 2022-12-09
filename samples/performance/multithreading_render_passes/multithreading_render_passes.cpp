@@ -532,6 +532,8 @@ void MultithreadingRenderPasses::ShadowSubpass::prepare_push_constants(vkb::Comm
 int main(int argc, char *argv[])
 {
 	MultithreadingRenderPasses app;
+	app.set_name("MultithreadingRenderPasses");
+	app.resize({800, 600});
 	app.prepare();
 	return app.run();
 }
