@@ -410,13 +410,13 @@ void VulkanSample::render(CommandBuffer &command_buffer)
 	}
 }
 
-bool VulkanSample::resize(uint32_t width, uint32_t height)
+bool VulkanSample::on_resize(uint32_t width, uint32_t height)
 {
-	Application::resize(width, height);
+	Application::on_resize(width, height);
 
 	if (gui)
 	{
-		gui->resize(width, height);
+		gui->on_resize(width, height);
 	}
 
 	if (scene && scene->has_component<sg::Script>())
@@ -425,7 +425,7 @@ bool VulkanSample::resize(uint32_t width, uint32_t height)
 
 		for (auto script : scripts)
 		{
-			script->resize(width, height);
+			script->on_resize(width, height);
 		}
 	}
 

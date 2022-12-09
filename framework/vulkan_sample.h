@@ -117,7 +117,7 @@ class VulkanSample : public Application
 	 */
 	void update(float delta_time) override;
 
-	bool resize(uint32_t width, uint32_t height) override;
+	bool on_resize(uint32_t width, uint32_t height) override;
 
 	void input_event(const InputEvent &input_event) override;
 

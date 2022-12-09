@@ -29,7 +29,6 @@
 
 namespace vkb {
 
-    class Window;
 
     class Application {
     public:
@@ -61,12 +60,19 @@ namespace vkb {
 	     */
 	    virtual void update(float delta_time);
 
-        /**
+	    /**
+		 * @brief Attempts to change the size of the application's window
+		 * @param extent The preferred window extent
+		 * @return The new/resulted window extent
+         */
+        virtual Window::Extent resize(const Window::Extent &extent);
+
+	    /**
          * @brief Handles resizing of the window
          * @param width New width of the window
          * @param height New height of the window
-         */
-        virtual bool resize(const uint32_t width, const uint32_t height) { return true; }
+	     */
+	    virtual bool on_resize(const uint32_t width, const uint32_t height) { return true; }
 
         /**
          * @brief Handles input events of the window

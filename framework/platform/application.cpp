@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-#include <iostream>
-
 #include "application.h"
 #include "platform/platform.h"
 
@@ -75,6 +73,10 @@ void Application::update(float delta_time)
 {
 	fps        = 1.0f / delta_time;
 	frame_time = delta_time * 1000.0f;
+}
+
+Window::Extent Application::resize(const Window::Extent &extent) {
+	return window->resize(extent);
 }
 
 const std::string &Application::get_name() const

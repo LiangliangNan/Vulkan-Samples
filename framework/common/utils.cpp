@@ -281,7 +281,7 @@ sg::Node &add_free_camera(sg::Scene &scene, const std::string &node_name, VkExte
 
 	auto free_camera_script = std::make_unique<sg::FreeCamera>(*camera_node);
 
-	free_camera_script->resize(extent.width, extent.height);
+	free_camera_script->on_resize(extent.width, extent.height);
 
 	scene.add_component(std::move(free_camera_script), *camera_node);
 

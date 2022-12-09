@@ -262,7 +262,7 @@ class Gui
 	 * @param width New width of the window
 	 * @param height New height of the window
 	 */
-	void resize(const uint32_t width, const uint32_t height) const;
+	void on_resize(const uint32_t width, const uint32_t height) const;
 
 	/**
 	 * @brief Starts a new ImGui frame

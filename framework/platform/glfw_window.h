@@ -17,7 +17,6 @@
 
 #pragma once
 
-//#include "vk_common.h"
 #include "window.h"
 
 struct GLFWwindow;
@@ -54,6 +53,8 @@ namespace vkb {
         float get_dpi_factor() const override;
 
         float get_content_scale_factor() const override;
+
+	    Extent resize(const Extent &extent) override;
 
 	    void set_title(const std::string& title) override;
 

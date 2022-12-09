@@ -90,7 +90,7 @@ class ApiVulkanSample : public vkb::VulkanSample
 
 	virtual void update(float delta_time) override;
 
-	virtual bool resize(const uint32_t width, const uint32_t height) override;
+	virtual bool on_resize(const uint32_t width, const uint32_t height) override;
 
 	virtual void render(float delta_time) = 0;
 

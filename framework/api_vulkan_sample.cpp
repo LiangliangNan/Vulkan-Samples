@@ -99,7 +99,7 @@ void ApiVulkanSample::update(float delta_time)
 	platform->on_post_draw(get_render_context());
 }
 
-bool ApiVulkanSample::resize(const uint32_t _width, const uint32_t _height)
+bool ApiVulkanSample::on_resize(const uint32_t _width, const uint32_t _height)
 {
 	if (!prepared)
 	{
@@ -140,7 +140,7 @@ bool ApiVulkanSample::resize(const uint32_t _width, const uint32_t _height)
 	{
 		if (gui)
 		{
-			gui->resize(width, height);
+			gui->on_resize(width, height);
 		}
 	}
 
@@ -171,13 +171,12 @@ vkb::Device &ApiVulkanSample::get_device()
 
 void ApiVulkanSample::create_render_context()
 {
-#if 0
+#if 1
 	// We always want an sRGB surface to match the display.
 	// If we used a UNORM surface, we'd have to do the conversion to sRGB ourselves at the end of our fragment shaders.
 	auto surface_priority_list = std::vector<VkSurfaceFormatKHR>{{VK_FORMAT_B8G8R8A8_SRGB, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR},
 	                                                             {VK_FORMAT_R8G8B8A8_SRGB, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR}};
 	VulkanSample::create_render_context(surface_priority_list);
-
 #else
 	VulkanSample::create_render_context();
 #endif
@@ -481,7 +480,7 @@ void ApiVulkanSample::prepare_frame()
 		// Recreate the swapchain if it's no longer compatible with the surface (OUT_OF_DATE) or no longer optimal for presentation (SUBOPTIMAL)
 		if ((result == VK_ERROR_OUT_OF_DATE_KHR) || (result == VK_SUBOPTIMAL_KHR))
 		{
-			resize(width, height);
+			on_resize(width, height);
 		}
 		else
 		{
@@ -527,7 +526,7 @@ void ApiVulkanSample::submit_frame()
 			if (present_result == VK_ERROR_OUT_OF_DATE_KHR)
 			{
 				// Swap chain is no longer compatible with the surface and needs to be recreated
-				resize(width, height);
+				on_resize(width, height);
 				return;
 			}
 			else
@@ -928,7 +927,7 @@ void ApiVulkanSample::handle_surface_changes()
 	if (surface_properties.currentExtent.width != get_render_context().get_surface_extent().width ||
 	    surface_properties.currentExtent.height != get_render_context().get_surface_extent().height)
 	{
-		resize(surface_properties.currentExtent.width, surface_properties.currentExtent.height);
+		on_resize(surface_properties.currentExtent.width, surface_properties.currentExtent.height);
 	}
 }
 

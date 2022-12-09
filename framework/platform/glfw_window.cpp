@@ -236,7 +236,7 @@ namespace vkb {
 	    glfwSetWindowSizeCallback(handle, [](GLFWwindow *window, int width, int height) {
 		    if (auto app = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window)))
 		    {
-			    app->resize(width, height);
+			    app->on_resize(width, height);
 		    }
 	    });
 	    glfwSetKeyCallback(handle, [](GLFWwindow *window, int key, int /*scancode*/, int action, int /*mods*/) {
@@ -350,6 +350,11 @@ namespace vkb {
         // but non-uniform scaling is very unlikely, and would
         // require significantly more changes in the IMGUI integration
         return static_cast<float>(fb_width) / win_width;
+    }
+
+    Window::Extent GlfwWindow::resize(const Window::Extent &extent) {
+	    glfwSetWindowSize(handle, extent.width, extent.height);
+	    return Window::resize(extent);
     }
 
     void GlfwWindow::set_title(const std::string& title) {

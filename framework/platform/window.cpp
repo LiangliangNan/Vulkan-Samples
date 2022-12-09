@@ -17,41 +17,53 @@
 
 #include "window.h"
 
-//#include "platform/platform.h"
 
-namespace vkb {
-    Window::Window(const Properties &properties) :
-            properties{properties} {
-    }
+namespace vkb
+{
+Window::Window(const Properties &properties) :
+    properties{properties}
+{
+}
 
-    void Window::process_events() {
-    }
+void Window::process_events()
+{
+}
 
-    Window::Extent Window::resize(const Extent &new_extent) {
-        if (properties.resizable) {
-            properties.extent.width = new_extent.width;
-            properties.extent.height = new_extent.height;
-        }
+Window::Extent Window::resize(const Extent &new_extent)
+{
+	if (properties.resizable)
+	{
+		properties.extent.width  = new_extent.width;
+		properties.extent.height = new_extent.height;
+	}
 
-        return properties.extent;
-    }
+	return properties.extent;
+}
 
-    const Window::Extent &Window::get_extent() const {
-        return properties.extent;
-    }
+const Window::Extent &Window::get_extent() const
+{
+	return properties.extent;
+}
 
-    Window::Mode Window::get_window_mode() const {
-        return properties.mode;
-    }
+float Window::get_content_scale_factor() const
+{
+	return 1.0f;
+}
 
-    bool Window::get_display_present_info(VkDisplayPresentInfoKHR *info,
-                                          uint32_t src_width, uint32_t src_height) const {
-        // Default is to not use the extra present info
-        return false;
-    }
+Window::Mode Window::get_window_mode() const
+{
+	return properties.mode;
+}
 
-    void Window::set_title(const std::string& title) {
-	    properties.title = title;
-    }
+bool Window::get_display_present_info(VkDisplayPresentInfoKHR *info,
+                                      uint32_t src_width, uint32_t src_height) const
+{
+	// Default is to not use the extra present info
+	return false;
+}
+
+void Window::set_title(const std::string& title) {
+	properties.title = title;
+}
 
 }        // namespace vkb
