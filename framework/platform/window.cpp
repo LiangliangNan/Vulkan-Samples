@@ -40,10 +40,6 @@ namespace vkb {
         return properties.extent;
     }
 
-    float Window::get_content_scale_factor() const {
-        return 1.0f;
-    }
-
     Window::Mode Window::get_window_mode() const {
         return properties.mode;
     }
@@ -52,6 +48,10 @@ namespace vkb {
                                           uint32_t src_width, uint32_t src_height) const {
         // Default is to not use the extra present info
         return false;
+    }
+
+    void Window::set_title(const std::string& title) {
+	    properties.title = title;
     }
 
 }        // namespace vkb

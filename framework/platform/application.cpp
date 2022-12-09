@@ -23,11 +23,13 @@
 namespace vkb
 {
 
-Application::Application(int argc, char *argv[]) :
-    name{"Sample Name"}
+Application::Application(int argc, char *argv[])
 {
 	platform = std::make_unique<Platform>(argc, argv);
-	window   = platform->create_window(this);
+
+	Window::Properties prop{};
+	prop.title = "Application";
+	window = platform->create_window(this, prop);
 }
 
 bool Application::prepare()
@@ -77,12 +79,12 @@ void Application::update(float delta_time)
 
 const std::string &Application::get_name() const
 {
-	return name;
+	return window->get_properties().title;
 }
 
 void Application::set_name(const std::string &name_)
 {
-	name = name_;
+	window->set_title(name_);
 }
 
 }        // namespace vkb

@@ -90,9 +90,8 @@ namespace vkb {
         uint32_t frame_count{0};
 
         uint32_t last_frame_count{0};
-    private:
-        std::string name{};
 
+	  private:
         // The debug info of the app
 		DebugInfo debug_info{};
 

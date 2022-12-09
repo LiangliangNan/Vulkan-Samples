@@ -110,7 +110,7 @@ namespace vkb {
         /**
          * @return The scale factor for systems with heterogeneous window and pixel coordinates
          */
-        virtual float get_content_scale_factor() const;
+        virtual float get_content_scale_factor() const = 0;
 
         /**
          * @brief Attempt to resize the window - not guaranteed to change
@@ -138,6 +138,8 @@ namespace vkb {
 
 	    /** @brief Gets the application title */
 	    const Properties& get_properties() const { return properties; }
+
+	    virtual void set_title(const std::string& title);
 
     protected:
         Properties properties;

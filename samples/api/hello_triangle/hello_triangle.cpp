@@ -1178,6 +1178,7 @@ bool HelloTriangle::resize(const uint32_t, const uint32_t)
 int main(int argc, char *argv[])
 {
 	HelloTriangle app;
+	app.set_name("abc");
 	app.prepare();
 	return app.run();
 }

@@ -55,6 +55,8 @@ namespace vkb {
 
         float get_content_scale_factor() const override;
 
+	    void set_title(const std::string& title) override;
+
     private:
         GLFWwindow *handle = nullptr;
     };

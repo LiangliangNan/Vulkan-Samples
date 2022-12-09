@@ -352,4 +352,12 @@ namespace vkb {
         return static_cast<float>(fb_width) / win_width;
     }
 
+    void GlfwWindow::set_title(const std::string& title) {
+	    Window::set_title(title);
+	    if (!title.empty())
+		    glfwSetWindowTitle(handle, title.c_str());
+	    else
+		    LOGW("empty title string provided");
+    }
+
 }        // namespace vkb
